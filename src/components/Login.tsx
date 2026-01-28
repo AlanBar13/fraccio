@@ -13,20 +13,23 @@ import { useRouter } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
 import { useState } from "react"
 import { loginFn } from "@/lib/user"
+import { getTenantByIdFn } from "@/lib/tenants"
 
 export default function Login() {
     const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const login = useServerFn(loginFn)
+    const getTenant = useServerFn(getTenantByIdFn)
 
     const handleLogin = async () => {
-        const { error } = await login({ data: { email, password } })
+        const { tenantId, error } = await login({ data: { email, password } })
         if (error) {
             console.log(error)
             return
         }
-        router.navigate({ to: '/' })
+        const tenant = await getTenant({ data: { id: tenantId } })
+        router.navigate({ to: `/${tenant.path}` })
     }
 
     return (

@@ -24,10 +24,16 @@ export const getUser = createServerFn({ method: 'GET' })
         if (!data.user) {
             throw new Error('User not found')
         }
+        const { data: profile, error: profileError } = await supabase.from('profiles').select("full_name, role").eq('id', data.user.id).single()
+        if (!profile || profileError) {
+            throw new Error('Profile not found')
+        }
 
         return {
             email: data.user.email,
-            tenantId: data.user.user_metadata.tenantId
+            tenantId: data.user.user_metadata.tenantId,
+            role: profile.role,
+            full_name: profile.full_name
         }
     })
 
@@ -35,7 +41,7 @@ export const loginFn = createServerFn({ method: 'POST' })
     .inputValidator(loginSchema)
     .handler(async ({ data }) => {
         const supabase = getSupabaseClient()
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data: auth, error } = await supabase.auth.signInWithPassword({
             email: data.email,
             password: data.password
         })
@@ -47,9 +53,24 @@ export const loginFn = createServerFn({ method: 'POST' })
             }
         }
 
+        if (!auth.user) {
+            return {
+                error: true,
+                message: 'User not found'
+            }
+        }
+
+        if (!auth.user.user_metadata.tenantId) {
+            return {
+                error: true,
+                message: 'User has no tenant assigned'
+            }
+        }
+
         return {
             error: false,
-            message: 'User logged in'
+            message: 'User logged in',
+            tenantId: auth.user.user_metadata.tenantId
         }
     })
 
@@ -80,4 +101,16 @@ export const signupFn = createServerFn({ method: 'POST' })
             error: false,
             message: 'User signed up'
         }
+    })
+
+export const logoutFn = createServerFn({ method: 'POST' })
+    .handler(async () => {
+        console.log('Logging out user...')
+        const supabase = await getSupabaseClient()
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            throw error
+        }
+        
+        return { error: false, message: 'User logged out' }
     })
