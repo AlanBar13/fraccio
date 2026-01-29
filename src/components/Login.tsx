@@ -19,10 +19,12 @@ export default function Login() {
     const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
     const login = useServerFn(loginFn)
     const getTenant = useServerFn(getTenantByIdFn)
 
     const handleLogin = async () => {
+        setIsLoading(true)
         const { tenantId, error } = await login({ data: { email, password } })
         if (error) {
             console.log(error)
@@ -70,7 +72,11 @@ export default function Login() {
             </CardContent>
             <CardFooter>
                 <div className="flex flex-col gap-2 w-full">
-                    <Button className="w-full" onClick={() => handleLogin()}>Iniciar sesión</Button>
+                    {isLoading ? (
+                        <Button disabled className="w-full">Iniciando sesión...</Button>
+                    ) : (
+                        <Button onClick={handleLogin} className="w-full">Iniciar sesión</Button>
+                    )}
                 </div>
             </CardFooter>
             <div className="mb-4 text-center text-sm text-foreground/60">

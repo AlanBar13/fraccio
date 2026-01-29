@@ -13,15 +13,17 @@ export interface SidebarNavItem {
   disabled?: boolean
   children?: SidebarNavItem[]
   badge?: string | number
+  allowedRoles?: string[]
 }
 
 export interface SidebarNavProps extends React.HTMLAttributes<HTMLDivElement> {
   items: SidebarNavItem[]
   onItemClick?: (item: SidebarNavItem) => void
+  role?: string
 }
 
 const SidebarNav = React.forwardRef<HTMLDivElement, SidebarNavProps>(
-  ({ className, items, onItemClick, ...props }, ref) => {
+  ({ className, items, onItemClick, role, ...props }, ref) => {
     const [expandedItems, setExpandedItems] = React.useState<Set<string>>(new Set())
 
     const toggleExpanded = (itemId: string) => {
@@ -38,6 +40,10 @@ const SidebarNav = React.forwardRef<HTMLDivElement, SidebarNavProps>(
       return items.map((item) => {
         const isExpanded = expandedItems.has(item.id)
         const hasChildren = item.children && item.children.length > 0
+
+        if (item.allowedRoles && role && !item.allowedRoles.includes(role)) {
+          return null
+        }
 
         return (
           <div key={item.id}>

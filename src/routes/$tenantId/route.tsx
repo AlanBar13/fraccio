@@ -63,9 +63,9 @@ function RouteComponent() {
                     { id: '4', label: 'Pagos', onClick: () => onRouteChange('/pagos'), icon: <Banknote /> },
                     { id: '5', label: 'Documentos', onClick: () => onRouteChange('/documentos'), icon: <BookOpen /> },
                     {
-                        id: '6', label: 'Perfil', icon: <UserPen />, children: [
-                            { id: '6.1', label: 'Ver Perfil', onClick: () => onRouteChange('/perfil') },
-                            { id: '6.2', label: 'Cerrar Sesión', onClick: () => onLogout() }
+                        id: '7', label: 'Perfil', icon: <UserPen />, children: [
+                            { id: '7.1', label: 'Ver Perfil', onClick: () => onRouteChange('/perfil') },
+                            { id: '7.2', label: 'Cerrar Sesión', onClick: () => onLogout() }
                         ]
                     },
                 ]} />
