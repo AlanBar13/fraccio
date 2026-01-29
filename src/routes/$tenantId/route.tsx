@@ -13,6 +13,13 @@ export const Route = createFileRoute('/$tenantId')({
             }
 
             const user = await getUser()
+
+            // Check if user is superadmin, if it is, allow access
+            if (user.role === 'superadmin') {
+                return { tenant, user }
+            }
+
+            // Check if user belongs to tenant
             if (user.tenantId !== tenant.id) {
                 throw redirect({ to: '/user-not-in-fracc' })
             }

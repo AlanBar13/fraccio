@@ -13,21 +13,17 @@ import { Route as UserNotInFraccRouteImport } from './routes/user-not-in-fracc'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as NotFoundRouteImport } from './routes/not-found'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as TenantIdRouteRouteImport } from './routes/$tenantId/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as TenantIdIndexRouteImport } from './routes/$tenantId/index'
+import { Route as AdminFraccionamientosRouteImport } from './routes/admin/fraccionamientos'
 import { Route as TenantIdPerfilRouteImport } from './routes/$tenantId/perfil'
 import { Route as TenantIdPagosRouteImport } from './routes/$tenantId/pagos'
 import { Route as TenantIdDocumentosRouteImport } from './routes/$tenantId/documentos'
 import { Route as TenantIdCasaRouteImport } from './routes/$tenantId/casa'
 import { Route as TenantIdAnunciosRouteImport } from './routes/$tenantId/anuncios'
-import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
-import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
-import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
-import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.index'
-import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
-import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
-import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
 
 const UserNotInFraccRoute = UserNotInFraccRouteImport.update({
   id: '/user-not-in-fracc',
@@ -49,6 +45,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TenantIdRouteRoute = TenantIdRouteRouteImport.update({
   id: '/$tenantId',
   path: '/$tenantId',
@@ -59,10 +60,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const TenantIdIndexRoute = TenantIdIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => TenantIdRouteRoute,
+} as any)
+const AdminFraccionamientosRoute = AdminFraccionamientosRouteImport.update({
+  id: '/fraccionamientos',
+  path: '/fraccionamientos',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const TenantIdPerfilRoute = TenantIdPerfilRouteImport.update({
   id: '/perfil',
@@ -89,45 +100,11 @@ const TenantIdAnunciosRoute = TenantIdAnunciosRouteImport.update({
   path: '/anuncios',
   getParentRoute: () => TenantIdRouteRoute,
 } as any)
-const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
-  id: '/demo/start/server-funcs',
-  path: '/demo/start/server-funcs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStartApiRequestRoute = DemoStartApiRequestRouteImport.update({
-  id: '/demo/start/api-request',
-  path: '/demo/start/api-request',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoApiNamesRoute = DemoApiNamesRouteImport.update({
-  id: '/demo/api/names',
-  path: '/demo/api/names',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStartSsrIndexRoute = DemoStartSsrIndexRouteImport.update({
-  id: '/demo/start/ssr/',
-  path: '/demo/start/ssr/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStartSsrSpaModeRoute = DemoStartSsrSpaModeRouteImport.update({
-  id: '/demo/start/ssr/spa-mode',
-  path: '/demo/start/ssr/spa-mode',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStartSsrFullSsrRoute = DemoStartSsrFullSsrRouteImport.update({
-  id: '/demo/start/ssr/full-ssr',
-  path: '/demo/start/ssr/full-ssr',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
-  id: '/demo/start/ssr/data-only',
-  path: '/demo/start/ssr/data-only',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$tenantId': typeof TenantIdRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
   '/signup': typeof SignupRoute
@@ -137,14 +114,9 @@ export interface FileRoutesByFullPath {
   '/$tenantId/documentos': typeof TenantIdDocumentosRoute
   '/$tenantId/pagos': typeof TenantIdPagosRoute
   '/$tenantId/perfil': typeof TenantIdPerfilRoute
+  '/admin/fraccionamientos': typeof AdminFraccionamientosRoute
   '/$tenantId/': typeof TenantIdIndexRoute
-  '/demo/api/names': typeof DemoApiNamesRoute
-  '/demo/start/api-request': typeof DemoStartApiRequestRoute
-  '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
-  '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
-  '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
-  '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
-  '/demo/start/ssr/': typeof DemoStartSsrIndexRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -157,19 +129,15 @@ export interface FileRoutesByTo {
   '/$tenantId/documentos': typeof TenantIdDocumentosRoute
   '/$tenantId/pagos': typeof TenantIdPagosRoute
   '/$tenantId/perfil': typeof TenantIdPerfilRoute
+  '/admin/fraccionamientos': typeof AdminFraccionamientosRoute
   '/$tenantId': typeof TenantIdIndexRoute
-  '/demo/api/names': typeof DemoApiNamesRoute
-  '/demo/start/api-request': typeof DemoStartApiRequestRoute
-  '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
-  '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
-  '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
-  '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
-  '/demo/start/ssr': typeof DemoStartSsrIndexRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$tenantId': typeof TenantIdRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
   '/signup': typeof SignupRoute
@@ -179,20 +147,16 @@ export interface FileRoutesById {
   '/$tenantId/documentos': typeof TenantIdDocumentosRoute
   '/$tenantId/pagos': typeof TenantIdPagosRoute
   '/$tenantId/perfil': typeof TenantIdPerfilRoute
+  '/admin/fraccionamientos': typeof AdminFraccionamientosRoute
   '/$tenantId/': typeof TenantIdIndexRoute
-  '/demo/api/names': typeof DemoApiNamesRoute
-  '/demo/start/api-request': typeof DemoStartApiRequestRoute
-  '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
-  '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
-  '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
-  '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
-  '/demo/start/ssr/': typeof DemoStartSsrIndexRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/$tenantId'
+    | '/admin'
     | '/login'
     | '/not-found'
     | '/signup'
@@ -202,14 +166,9 @@ export interface FileRouteTypes {
     | '/$tenantId/documentos'
     | '/$tenantId/pagos'
     | '/$tenantId/perfil'
+    | '/admin/fraccionamientos'
     | '/$tenantId/'
-    | '/demo/api/names'
-    | '/demo/start/api-request'
-    | '/demo/start/server-funcs'
-    | '/demo/start/ssr/data-only'
-    | '/demo/start/ssr/full-ssr'
-    | '/demo/start/ssr/spa-mode'
-    | '/demo/start/ssr/'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -222,18 +181,14 @@ export interface FileRouteTypes {
     | '/$tenantId/documentos'
     | '/$tenantId/pagos'
     | '/$tenantId/perfil'
+    | '/admin/fraccionamientos'
     | '/$tenantId'
-    | '/demo/api/names'
-    | '/demo/start/api-request'
-    | '/demo/start/server-funcs'
-    | '/demo/start/ssr/data-only'
-    | '/demo/start/ssr/full-ssr'
-    | '/demo/start/ssr/spa-mode'
-    | '/demo/start/ssr'
+    | '/admin'
   id:
     | '__root__'
     | '/'
     | '/$tenantId'
+    | '/admin'
     | '/login'
     | '/not-found'
     | '/signup'
@@ -243,30 +198,19 @@ export interface FileRouteTypes {
     | '/$tenantId/documentos'
     | '/$tenantId/pagos'
     | '/$tenantId/perfil'
+    | '/admin/fraccionamientos'
     | '/$tenantId/'
-    | '/demo/api/names'
-    | '/demo/start/api-request'
-    | '/demo/start/server-funcs'
-    | '/demo/start/ssr/data-only'
-    | '/demo/start/ssr/full-ssr'
-    | '/demo/start/ssr/spa-mode'
-    | '/demo/start/ssr/'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TenantIdRouteRoute: typeof TenantIdRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   NotFoundRoute: typeof NotFoundRoute
   SignupRoute: typeof SignupRoute
   UserNotInFraccRoute: typeof UserNotInFraccRoute
-  DemoApiNamesRoute: typeof DemoApiNamesRoute
-  DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
-  DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
-  DemoStartSsrDataOnlyRoute: typeof DemoStartSsrDataOnlyRoute
-  DemoStartSsrFullSsrRoute: typeof DemoStartSsrFullSsrRoute
-  DemoStartSsrSpaModeRoute: typeof DemoStartSsrSpaModeRoute
-  DemoStartSsrIndexRoute: typeof DemoStartSsrIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -299,6 +243,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$tenantId': {
       id: '/$tenantId'
       path: '/$tenantId'
@@ -313,12 +264,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/$tenantId/': {
       id: '/$tenantId/'
       path: '/'
       fullPath: '/$tenantId/'
       preLoaderRoute: typeof TenantIdIndexRouteImport
       parentRoute: typeof TenantIdRouteRoute
+    }
+    '/admin/fraccionamientos': {
+      id: '/admin/fraccionamientos'
+      path: '/fraccionamientos'
+      fullPath: '/admin/fraccionamientos'
+      preLoaderRoute: typeof AdminFraccionamientosRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/$tenantId/perfil': {
       id: '/$tenantId/perfil'
@@ -355,55 +320,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TenantIdAnunciosRouteImport
       parentRoute: typeof TenantIdRouteRoute
     }
-    '/demo/start/server-funcs': {
-      id: '/demo/start/server-funcs'
-      path: '/demo/start/server-funcs'
-      fullPath: '/demo/start/server-funcs'
-      preLoaderRoute: typeof DemoStartServerFuncsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/start/api-request': {
-      id: '/demo/start/api-request'
-      path: '/demo/start/api-request'
-      fullPath: '/demo/start/api-request'
-      preLoaderRoute: typeof DemoStartApiRequestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/api/names': {
-      id: '/demo/api/names'
-      path: '/demo/api/names'
-      fullPath: '/demo/api/names'
-      preLoaderRoute: typeof DemoApiNamesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/start/ssr/': {
-      id: '/demo/start/ssr/'
-      path: '/demo/start/ssr'
-      fullPath: '/demo/start/ssr/'
-      preLoaderRoute: typeof DemoStartSsrIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/start/ssr/spa-mode': {
-      id: '/demo/start/ssr/spa-mode'
-      path: '/demo/start/ssr/spa-mode'
-      fullPath: '/demo/start/ssr/spa-mode'
-      preLoaderRoute: typeof DemoStartSsrSpaModeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/start/ssr/full-ssr': {
-      id: '/demo/start/ssr/full-ssr'
-      path: '/demo/start/ssr/full-ssr'
-      fullPath: '/demo/start/ssr/full-ssr'
-      preLoaderRoute: typeof DemoStartSsrFullSsrRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/start/ssr/data-only': {
-      id: '/demo/start/ssr/data-only'
-      path: '/demo/start/ssr/data-only'
-      fullPath: '/demo/start/ssr/data-only'
-      preLoaderRoute: typeof DemoStartSsrDataOnlyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -429,20 +345,28 @@ const TenantIdRouteRouteWithChildren = TenantIdRouteRoute._addFileChildren(
   TenantIdRouteRouteChildren,
 )
 
+interface AdminRouteRouteChildren {
+  AdminFraccionamientosRoute: typeof AdminFraccionamientosRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminFraccionamientosRoute: AdminFraccionamientosRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TenantIdRouteRoute: TenantIdRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   NotFoundRoute: NotFoundRoute,
   SignupRoute: SignupRoute,
   UserNotInFraccRoute: UserNotInFraccRoute,
-  DemoApiNamesRoute: DemoApiNamesRoute,
-  DemoStartApiRequestRoute: DemoStartApiRequestRoute,
-  DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
-  DemoStartSsrDataOnlyRoute: DemoStartSsrDataOnlyRoute,
-  DemoStartSsrFullSsrRoute: DemoStartSsrFullSsrRoute,
-  DemoStartSsrSpaModeRoute: DemoStartSsrSpaModeRoute,
-  DemoStartSsrIndexRoute: DemoStartSsrIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

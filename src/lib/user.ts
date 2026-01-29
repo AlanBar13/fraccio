@@ -13,6 +13,13 @@ const signupSchema = z.object({
     tenantId: z.string(),
 })
 
+interface LoginData {
+    error: boolean
+    message: string
+    tenantId?: string | null
+    role?: string
+}
+
 export const getUser = createServerFn({ method: 'GET' })
     .handler(async () => {
         const supabase = getSupabaseClient()
@@ -39,7 +46,7 @@ export const getUser = createServerFn({ method: 'GET' })
 
 export const loginFn = createServerFn({ method: 'POST' })
     .inputValidator(loginSchema)
-    .handler(async ({ data }) => {
+    .handler(async ({ data }): Promise<LoginData> => {
         const supabase = getSupabaseClient()
         const { data: auth, error } = await supabase.auth.signInWithPassword({
             email: data.email,
@@ -60,17 +67,20 @@ export const loginFn = createServerFn({ method: 'POST' })
             }
         }
 
-        if (!auth.user.user_metadata.tenantId) {
+        const { data: profile, error: profileError } = await supabase.from('profiles').select("role").eq('id', auth.user.id).single()
+        if (!profile || profileError) {
             return {
                 error: true,
-                message: 'User has no tenant assigned'
+                message: 'Profile not found'
             }
         }
+
 
         return {
             error: false,
             message: 'User logged in',
-            tenantId: auth.user.user_metadata.tenantId
+            tenantId: auth.user.user_metadata.tenantId || null,
+            role: profile.role
         }
     })
 

@@ -25,11 +25,22 @@ export default function Login() {
 
     const handleLogin = async () => {
         setIsLoading(true)
-        const { tenantId, error } = await login({ data: { email, password } })
+        const { tenantId, role, error } = await login({ data: { email, password } })
         if (error) {
             console.log(error)
             return
         }
+
+        if (role === 'superadmin') {
+            router.navigate({ to: '/admin' })
+            return
+        }
+        
+        if (!tenantId) {
+            console.error('No tenant assigned to user')
+            return
+        }
+
         const tenant = await getTenant({ data: { id: tenantId } })
         router.navigate({ to: `/${tenant.path}` })
     }
