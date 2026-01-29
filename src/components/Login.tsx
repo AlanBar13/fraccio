@@ -73,6 +73,12 @@ export default function Login() {
                     <Button className="w-full" onClick={() => handleLogin()}>Iniciar sesión</Button>
                 </div>
             </CardFooter>
+            <div className="mb-4 text-center text-sm text-foreground/60">
+                ¿No tienes una cuenta?{' '}
+                <a href="/signup" className="underline hover:text-foreground">
+                    Regístrate
+                </a>
+            </div>
         </Card>
     )
 }

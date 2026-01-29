@@ -13,8 +13,14 @@ import { Route as UserNotInFraccRouteImport } from './routes/user-not-in-fracc'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as NotFoundRouteImport } from './routes/not-found'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as TenantIdRouteRouteImport } from './routes/$tenantId/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TenantIdIndexRouteImport } from './routes/$tenantId/index'
+import { Route as TenantIdPerfilRouteImport } from './routes/$tenantId/perfil'
+import { Route as TenantIdPagosRouteImport } from './routes/$tenantId/pagos'
+import { Route as TenantIdDocumentosRouteImport } from './routes/$tenantId/documentos'
+import { Route as TenantIdCasaRouteImport } from './routes/$tenantId/casa'
+import { Route as TenantIdAnunciosRouteImport } from './routes/$tenantId/anuncios'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
@@ -43,15 +49,45 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TenantIdRouteRoute = TenantIdRouteRouteImport.update({
+  id: '/$tenantId',
+  path: '/$tenantId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TenantIdIndexRoute = TenantIdIndexRouteImport.update({
-  id: '/$tenantId/',
-  path: '/$tenantId/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => TenantIdRouteRoute,
+} as any)
+const TenantIdPerfilRoute = TenantIdPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => TenantIdRouteRoute,
+} as any)
+const TenantIdPagosRoute = TenantIdPagosRouteImport.update({
+  id: '/pagos',
+  path: '/pagos',
+  getParentRoute: () => TenantIdRouteRoute,
+} as any)
+const TenantIdDocumentosRoute = TenantIdDocumentosRouteImport.update({
+  id: '/documentos',
+  path: '/documentos',
+  getParentRoute: () => TenantIdRouteRoute,
+} as any)
+const TenantIdCasaRoute = TenantIdCasaRouteImport.update({
+  id: '/casa',
+  path: '/casa',
+  getParentRoute: () => TenantIdRouteRoute,
+} as any)
+const TenantIdAnunciosRoute = TenantIdAnunciosRouteImport.update({
+  id: '/anuncios',
+  path: '/anuncios',
+  getParentRoute: () => TenantIdRouteRoute,
 } as any)
 const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
   id: '/demo/start/server-funcs',
@@ -91,10 +127,16 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$tenantId': typeof TenantIdRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
   '/signup': typeof SignupRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
+  '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
+  '/$tenantId/casa': typeof TenantIdCasaRoute
+  '/$tenantId/documentos': typeof TenantIdDocumentosRoute
+  '/$tenantId/pagos': typeof TenantIdPagosRoute
+  '/$tenantId/perfil': typeof TenantIdPerfilRoute
   '/$tenantId/': typeof TenantIdIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
@@ -110,6 +152,11 @@ export interface FileRoutesByTo {
   '/not-found': typeof NotFoundRoute
   '/signup': typeof SignupRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
+  '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
+  '/$tenantId/casa': typeof TenantIdCasaRoute
+  '/$tenantId/documentos': typeof TenantIdDocumentosRoute
+  '/$tenantId/pagos': typeof TenantIdPagosRoute
+  '/$tenantId/perfil': typeof TenantIdPerfilRoute
   '/$tenantId': typeof TenantIdIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
@@ -122,10 +169,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$tenantId': typeof TenantIdRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
   '/signup': typeof SignupRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
+  '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
+  '/$tenantId/casa': typeof TenantIdCasaRoute
+  '/$tenantId/documentos': typeof TenantIdDocumentosRoute
+  '/$tenantId/pagos': typeof TenantIdPagosRoute
+  '/$tenantId/perfil': typeof TenantIdPerfilRoute
   '/$tenantId/': typeof TenantIdIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
@@ -139,10 +192,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$tenantId'
     | '/login'
     | '/not-found'
     | '/signup'
     | '/user-not-in-fracc'
+    | '/$tenantId/anuncios'
+    | '/$tenantId/casa'
+    | '/$tenantId/documentos'
+    | '/$tenantId/pagos'
+    | '/$tenantId/perfil'
     | '/$tenantId/'
     | '/demo/api/names'
     | '/demo/start/api-request'
@@ -158,6 +217,11 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/signup'
     | '/user-not-in-fracc'
+    | '/$tenantId/anuncios'
+    | '/$tenantId/casa'
+    | '/$tenantId/documentos'
+    | '/$tenantId/pagos'
+    | '/$tenantId/perfil'
     | '/$tenantId'
     | '/demo/api/names'
     | '/demo/start/api-request'
@@ -169,10 +233,16 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/$tenantId'
     | '/login'
     | '/not-found'
     | '/signup'
     | '/user-not-in-fracc'
+    | '/$tenantId/anuncios'
+    | '/$tenantId/casa'
+    | '/$tenantId/documentos'
+    | '/$tenantId/pagos'
+    | '/$tenantId/perfil'
     | '/$tenantId/'
     | '/demo/api/names'
     | '/demo/start/api-request'
@@ -185,11 +255,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TenantIdRouteRoute: typeof TenantIdRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   NotFoundRoute: typeof NotFoundRoute
   SignupRoute: typeof SignupRoute
   UserNotInFraccRoute: typeof UserNotInFraccRoute
-  TenantIdIndexRoute: typeof TenantIdIndexRoute
   DemoApiNamesRoute: typeof DemoApiNamesRoute
   DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
   DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
@@ -229,6 +299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$tenantId': {
+      id: '/$tenantId'
+      path: '/$tenantId'
+      fullPath: '/$tenantId'
+      preLoaderRoute: typeof TenantIdRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -238,10 +315,45 @@ declare module '@tanstack/react-router' {
     }
     '/$tenantId/': {
       id: '/$tenantId/'
-      path: '/$tenantId'
+      path: '/'
       fullPath: '/$tenantId/'
       preLoaderRoute: typeof TenantIdIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof TenantIdRouteRoute
+    }
+    '/$tenantId/perfil': {
+      id: '/$tenantId/perfil'
+      path: '/perfil'
+      fullPath: '/$tenantId/perfil'
+      preLoaderRoute: typeof TenantIdPerfilRouteImport
+      parentRoute: typeof TenantIdRouteRoute
+    }
+    '/$tenantId/pagos': {
+      id: '/$tenantId/pagos'
+      path: '/pagos'
+      fullPath: '/$tenantId/pagos'
+      preLoaderRoute: typeof TenantIdPagosRouteImport
+      parentRoute: typeof TenantIdRouteRoute
+    }
+    '/$tenantId/documentos': {
+      id: '/$tenantId/documentos'
+      path: '/documentos'
+      fullPath: '/$tenantId/documentos'
+      preLoaderRoute: typeof TenantIdDocumentosRouteImport
+      parentRoute: typeof TenantIdRouteRoute
+    }
+    '/$tenantId/casa': {
+      id: '/$tenantId/casa'
+      path: '/casa'
+      fullPath: '/$tenantId/casa'
+      preLoaderRoute: typeof TenantIdCasaRouteImport
+      parentRoute: typeof TenantIdRouteRoute
+    }
+    '/$tenantId/anuncios': {
+      id: '/$tenantId/anuncios'
+      path: '/anuncios'
+      fullPath: '/$tenantId/anuncios'
+      preLoaderRoute: typeof TenantIdAnunciosRouteImport
+      parentRoute: typeof TenantIdRouteRoute
     }
     '/demo/start/server-funcs': {
       id: '/demo/start/server-funcs'
@@ -295,13 +407,35 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface TenantIdRouteRouteChildren {
+  TenantIdAnunciosRoute: typeof TenantIdAnunciosRoute
+  TenantIdCasaRoute: typeof TenantIdCasaRoute
+  TenantIdDocumentosRoute: typeof TenantIdDocumentosRoute
+  TenantIdPagosRoute: typeof TenantIdPagosRoute
+  TenantIdPerfilRoute: typeof TenantIdPerfilRoute
+  TenantIdIndexRoute: typeof TenantIdIndexRoute
+}
+
+const TenantIdRouteRouteChildren: TenantIdRouteRouteChildren = {
+  TenantIdAnunciosRoute: TenantIdAnunciosRoute,
+  TenantIdCasaRoute: TenantIdCasaRoute,
+  TenantIdDocumentosRoute: TenantIdDocumentosRoute,
+  TenantIdPagosRoute: TenantIdPagosRoute,
+  TenantIdPerfilRoute: TenantIdPerfilRoute,
+  TenantIdIndexRoute: TenantIdIndexRoute,
+}
+
+const TenantIdRouteRouteWithChildren = TenantIdRouteRoute._addFileChildren(
+  TenantIdRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TenantIdRouteRoute: TenantIdRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   NotFoundRoute: NotFoundRoute,
   SignupRoute: SignupRoute,
   UserNotInFraccRoute: UserNotInFraccRoute,
-  TenantIdIndexRoute: TenantIdIndexRoute,
   DemoApiNamesRoute: DemoApiNamesRoute,
   DemoStartApiRequestRoute: DemoStartApiRequestRoute,
   DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,

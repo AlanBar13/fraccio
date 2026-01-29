@@ -6,6 +6,10 @@ export const Route = createFileRoute('/login')({
 })
 
 function LoginComp() {
-    return <Login />
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-background">
+            <Login />
+        </div>
+    )
 }
 

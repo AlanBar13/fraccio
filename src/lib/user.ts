@@ -105,7 +105,6 @@ export const signupFn = createServerFn({ method: 'POST' })
 
 export const logoutFn = createServerFn({ method: 'POST' })
     .handler(async () => {
-        console.log('Logging out user...')
         const supabase = await getSupabaseClient()
         const { error } = await supabase.auth.signOut();
         if (error) {
