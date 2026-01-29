@@ -1,10 +1,10 @@
 import { SidebarNav } from '@/components/navigation'
 import { getUser, logoutFn } from '@/lib/user'
 import { createFileRoute, isRedirect, Outlet, redirect, useRouter } from '@tanstack/react-router'
-import { Building, House } from 'lucide-react'
+import { Building, House, Users } from 'lucide-react'
 
 export const Route = createFileRoute('/admin')({
-    beforeLoad: async () => {
+  beforeLoad: async () => {
         try {
             const user = await getUser()
             if (user.role !== "superadmin") {
@@ -17,11 +17,16 @@ export const Route = createFileRoute('/admin')({
             throw redirect({ to: '/login' })
         }
     },
-    component: RouteComponent,
+  component: RouteComponent,
+  head: () => ({
+    meta: [
+        { title: 'Admin Dashboard | Fraccio' }
+    ]
+  })
 })
 
 function RouteComponent() {
-    const route = useRouter()
+  const route = useRouter()
     const onRouteChange = (path: string) => {
         route.navigate({ to: `/admin/${path}` })
     }
@@ -36,11 +41,12 @@ function RouteComponent() {
     }
     return (
         <div className="flex h-screen">
-            <aside className="w-45 border-r border-border/50 bg-card p-4">
+            <aside className="w-55 border-r border-border/50 bg-card p-4">
                 <SidebarNav items={[
                     { id: '1', label: 'Dashboard', onClick: () => onRouteChange('/'), icon: <House /> },
                     { id: '2', label: 'Fraccionamientos', onClick: () => onRouteChange('/fraccionamientos'), icon: <Building /> },
-                    { id: '3', label: 'Cerrar Sesión', onClick: () => onLogout() },
+                    { id: '3', label: 'Usuarios', onClick: () => onRouteChange('/usuarios'), icon: <Users /> },
+                    { id: '4', label: 'Cerrar Sesión', onClick: () => onLogout() },
                 ]} />
             </aside>
             <main className="flex-1 overflow-auto bg-background p-6">

@@ -7,12 +7,11 @@ import { Banknote, BookOpen, Building, House, Mail, UserPen } from 'lucide-react
 export const Route = createFileRoute('/$tenantId')({
     beforeLoad: async ({ params }) => {
         try {
+            const user = await getUser()
             const tenant = await getTenantFn({ data: { path: params.tenantId } })
             if (!tenant) {
                 throw redirect({ to: '/not-found' })
             }
-
-            const user = await getUser()
 
             // Check if user is superadmin, if it is, allow access
             if (user.role === 'superadmin') {
