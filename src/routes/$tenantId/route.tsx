@@ -32,10 +32,11 @@ export const Route = createFileRoute('/$tenantId')({
     component: RouteComponent,
     head: async ({ params }) => {
     const tenant = await getTenantFn({ data: { path: params.tenantId } })
+
     return {
       meta: [
         {
-          title: `${tenant.name} | Fraccio`
+          title: `${tenant ? tenant.name : 'Fraccionamiento'} | Fraccio`
         }
       ]
     }

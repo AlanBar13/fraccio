@@ -31,14 +31,14 @@ export const getUser = createServerFn({ method: 'GET' })
         if (!data.user) {
             throw new Error('User not found')
         }
-        const { data: profile, error: profileError } = await supabase.from('profiles').select("full_name, role").eq('id', data.user.id).single()
+        const { data: profile, error: profileError } = await supabase.from('profiles').select("full_name, role, tenant_id").eq('id', data.user.id).single()
         if (!profile || profileError) {
             throw new Error('Profile not found')
         }
 
         return {
             email: data.user.email,
-            tenantId: data.user.user_metadata.tenantId,
+            tenantId: profile.tenant_id,
             role: profile.role,
             full_name: profile.full_name
         }
@@ -67,7 +67,7 @@ export const loginFn = createServerFn({ method: 'POST' })
             }
         }
 
-        const { data: profile, error: profileError } = await supabase.from('profiles').select("role").eq('id', auth.user.id).single()
+        const { data: profile, error: profileError } = await supabase.from('profiles').select("role, tenant_id").eq('id', auth.user.id).single()
         if (!profile || profileError) {
             return {
                 error: true,
@@ -79,7 +79,7 @@ export const loginFn = createServerFn({ method: 'POST' })
         return {
             error: false,
             message: 'User logged in',
-            tenantId: auth.user.user_metadata.tenantId || null,
+            tenantId: profile.tenant_id || null,
             role: profile.role
         }
     })
@@ -93,7 +93,7 @@ export const signupFn = createServerFn({ method: 'POST' })
             password: data.password,
             options: {
                 data: {
-                    tenantId: data.tenantId,
+                    tenant_id: data.tenantId,
                     full_name: "Alan Bardales",
                     role: "user"
                 }
