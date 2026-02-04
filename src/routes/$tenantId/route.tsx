@@ -44,6 +44,7 @@ export const Route = createFileRoute('/$tenantId')({
 })
 
 function RouteComponent() {
+    const { user } = Route.useRouteContext()
     const route = useRouter()
     const params = Route.useParams()
 
@@ -63,14 +64,16 @@ function RouteComponent() {
     return (
         <div className="flex h-screen">
             <aside className="w-45 border-r border-border/50 bg-card p-4">
-                <SidebarNav items={[
+                <SidebarNav role={user.role} items={[
                     { id: '1', label: 'Dashboard', onClick: () => onRouteChange('/'), icon: <Building /> },
                     { id: '2', label: 'Anuncios', onClick: () => onRouteChange('/anuncios'), icon: <Mail /> },
                     { id: '3', label: 'Casa', onClick: () => onRouteChange('/casa'), icon: <House /> },
                     { id: '4', label: 'Pagos', onClick: () => onRouteChange('/pagos'), icon: <Banknote /> },
                     { id: '5', label: 'Documentos', onClick: () => onRouteChange('/documentos'), icon: <BookOpen /> },
+                    { id: '6', label: 'Usuarios', onClick: () => onRouteChange('/usuarios'), allowedRoles: ['admin', 'superadmin'], icon: <UserPen /> },
+                    { id: '7', label: 'Administrar Casas', onClick: () => onRouteChange('/adminCasas'), allowedRoles: ['admin', 'superadmin'], icon: <Building /> },
                     {
-                        id: '7', label: 'Perfil', icon: <UserPen />, children: [
+                        id: '8', label: 'Perfil', icon: <UserPen />, children: [
                             { id: '7.1', label: 'Ver Perfil', onClick: () => onRouteChange('/perfil') },
                             { id: '7.2', label: 'Cerrar Sesión', onClick: () => onLogout() }
                         ]

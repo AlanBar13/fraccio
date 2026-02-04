@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
-import { ChevronUp, ChevronDown } from 'lucide-react'
+import { ChevronUp, ChevronDown, Pencil, Trash } from 'lucide-react'
 import { Button } from '../ui/button'
 
 export interface DataTableColumn<T> {
@@ -22,6 +22,9 @@ export interface DataTableProps<T> {
   hoverable?: boolean
   striped?: boolean
   dense?: boolean
+  actions?: boolean
+  onEdit?: (row: T) => void
+  onDelete?: (row: T) => void
 }
 
 export const DataTable = React.forwardRef<
@@ -39,6 +42,9 @@ export const DataTable = React.forwardRef<
       hoverable = true,
       striped = false,
       dense = false,
+      actions = false,
+      onEdit,
+      onDelete,
     },
     ref
   ) => {
@@ -93,6 +99,16 @@ export const DataTable = React.forwardRef<
                   )}
                 </th>
               ))}
+              {actions && (
+                <>
+                  <th>
+                    <span>Editar</span>
+                  </th>
+                  <th>
+                    <span>Borrar</span>
+                  </th>
+                </>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -133,6 +149,16 @@ export const DataTable = React.forwardRef<
                         : String(row[col.key] || '')}
                     </td>
                   ))}
+                  {actions && (
+                    <>
+                      <td className="text-center">
+                        <Button variant="ghost" size="sm" onClick={() => onEdit && onEdit(row)} className="text-blue-500 hover:text-blue-700"><Pencil className="h-4 w-4" /></Button>
+                      </td>
+                      <td className="text-center">
+                        <Button variant="ghost" size="sm" onClick={() => onDelete && onDelete(row)} className="text-red-500 hover:text-red-700"><Trash className="h-4 w-4" /></Button>
+                      </td>
+                    </>
+                  )}
                 </tr>
               ))
             )}

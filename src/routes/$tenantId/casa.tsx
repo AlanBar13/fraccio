@@ -5,5 +5,9 @@ export const Route = createFileRoute('/$tenantId/casa')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/$tenantId/casa"!</div>
+  return (
+    <div>
+      <h1 className="text-2xl font-bold">Casa</h1>
+    </div>
+  )
 }
