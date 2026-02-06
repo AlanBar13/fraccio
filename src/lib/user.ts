@@ -123,3 +123,21 @@ export const logoutFn = createServerFn({ method: 'POST' })
         
         return { error: false, message: 'User logged out' }
     })
+
+export const inviteUserFn = createServerFn({ method: 'POST' })
+    .inputValidator(z.object({ email: z.email(), tenantId: z.string() }))
+    .handler(async ({ data }) => {
+        const supabase = getSupabaseClient()
+        console.log('Inviting user with data:', data)
+        const { data: inviteData, error } = await supabase.auth.admin.inviteUserByEmail(data.email, {
+            data: {
+                tenant_id: data.tenantId,
+                role: 'user',
+            }
+        })
+        if (error) {
+            throw error
+        }
+        console.log('Invite data:', inviteData)
+        return { error: false, message: 'User invited', data: inviteData }
+    })
