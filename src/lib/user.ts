@@ -9,8 +9,18 @@ const loginSchema = z.object({
 
 const signupSchema = z.object({
     email: z.email(),
+    name: z.string(),
     password: z.string().min(6),
-    tenantId: z.string(),
+    tenantId: z.uuid(),
+    inviteId: z.uuid()
+})
+
+const inviteUserSchema = z.object({ 
+    email: z.email(), 
+    tenantId: z.uuid(), 
+    house_id: z.number(), 
+    house_owner: z.boolean(), 
+    name: z.string() 
 })
 
 interface LoginData {
@@ -88,23 +98,34 @@ export const signupFn = createServerFn({ method: 'POST' })
     .inputValidator(signupSchema)
     .handler(async ({ data }) => {
         const supabase = getSupabaseClient()
-        const { error } = await supabase.auth.signUp({
+        
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            throw error
+        }
+
+        const { error: signupError } = await supabase.auth.signUp({
             email: data.email,
             password: data.password,
             options: {
                 data: {
                     tenant_id: data.tenantId,
-                    full_name: "Alan Bardales",
+                    full_name: data.name,
                     role: "user"
                 }
             }
         })
 
-        if (error) {
+        if (signupError) {
             return {
                 error: true,
-                message: error.message
+                message: signupError.message
             }
+        }
+
+        const { error: deleteInviteError } = await supabase.from('invites').delete().eq('id', data.inviteId)
+        if (deleteInviteError) {
+            console.error('Error deleting invite:', deleteInviteError)
         }
 
         return {
@@ -125,19 +146,38 @@ export const logoutFn = createServerFn({ method: 'POST' })
     })
 
 export const inviteUserFn = createServerFn({ method: 'POST' })
-    .inputValidator(z.object({ email: z.email(), tenantId: z.string() }))
+    .inputValidator(inviteUserSchema)
     .handler(async ({ data }) => {
         const supabase = getSupabaseClient()
-        console.log('Inviting user with data:', data)
-        const { data: inviteData, error } = await supabase.auth.admin.inviteUserByEmail(data.email, {
-            data: {
+
+        const { data: existingInvite } = await supabase
+            .from('invites')
+            .select()
+            .eq('email', data.email)
+            .eq('tenant_id', data.tenantId)
+            .single()
+
+        if (existingInvite) {
+            return { error: true, message: 'User already invited' }
+        }
+
+        const { data: inviteData, error } = await supabase
+            .from('invites')
+            .insert({
+                email: data.email,
                 tenant_id: data.tenantId,
-                role: 'user',
-            }
-        })
+                house_id: data.house_id,
+                house_owner: data.house_owner,
+                name: data.name,
+                expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // Expires in 7 days
+            })
+            .select()
+            .single()
+
         if (error) {
             throw error
         }
-        console.log('Invite data:', inviteData)
+
+        // send email to user with invite link (${DOMAIN}/accept-invite?token=${inviteData.id})
         return { error: false, message: 'User invited', data: inviteData }
     })

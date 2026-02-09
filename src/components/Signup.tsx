@@ -9,26 +9,70 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { signupFn } from "@/lib/user"
 import { useRouter } from "@tanstack/react-router"
+import { Database } from "@/database.types"
+import { useToast } from "./notifications"
+import { removeInviteFn } from "@/lib/invites"
 
-export default function Signup() {
+interface Props {
+    invite: Database['public']['Tables']['invites']['Row']
+}
+
+export default function Signup({ invite }: Props) {
+    const { addToast } = useToast()
     const router = useRouter()
     const [email, setEmail] = useState('')
+    const [name, setName] = useState('')
     const [password, setPassword] = useState('')
-    const [tenantId, _] = useState('7cc39891-9b06-436e-b56c-0a641db7a493')
-
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [loading, setLoading] = useState(false)
     const signupWithTenant = useServerFn(signupFn)
+    const removeInvite = useServerFn(removeInviteFn)
+
+    useEffect(() => {
+        setEmail(invite.email)
+        setName(invite.name)
+    }, [invite])
 
     const handleSignup = async () => {
-        const { error } = await signupWithTenant({ data: { email, password, tenantId } })
-        if (error) {
-            console.log(error)
-            return
+        try {
+            if (password !== confirmPassword) {
+                addToast({
+                    type: 'warning',
+                    description: 'Las contraseñas no coinciden',
+                    duration: 10000
+                })
+                return
+            }
+            setLoading(true)
+            const { error } = await signupWithTenant({
+                data: { email, password, name, tenantId: invite.tenant_id, inviteId: invite.id }
+            })
+            if (error) {
+                console.log(error)
+                addToast({
+                    type: 'error',
+                    description: `Error al registrarse`,
+                    duration: 10000
+                })
+                return
+            }
+            await removeInvite({ data: { token: invite.id } })
+            router.navigate({ to: '/login' })
+        } catch (error) {
+            console.error('Signup error:', error)
+            addToast({
+                type: 'error',
+                description: `Error al registrarse'}`,
+                duration: 10000
+            })
         }
-        router.navigate({ to: '/' })
+        finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -43,24 +87,40 @@ export default function Signup() {
                 <form>
                     <div className="flex flex-col gap-6">
                         <div className="grid gap-2">
+                            <Label htmlFor="name">Nombre Completo</Label>
+                            <Input
+                                id="name"
+                                type="text"
+                                placeholder="Nombre completo"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                        </div>
+                        <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
                             <Input
                                 id="email"
                                 type="email"
                                 placeholder="m@ejemplo.com"
-                                required
-                                onChange={(e) => setEmail(e.target.value)}
+                                disabled
+                                value={email}
                             />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="password">Contraseña</Label>
                             <Input id="password" type="password" required onChange={(e) => setPassword(e.target.value)} />
                         </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
+                            <Input id="confirmPassword" type="password" required onChange={(e) => setConfirmPassword(e.target.value)} />
+                        </div>
                     </div>
                 </form>
             </CardContent>
             <CardFooter>
-                <Button className="w-full" onClick={() => handleSignup()}>Registrarse</Button>
+                <Button className="w-full" onClick={() => handleSignup()} disabled={loading}>
+                    {loading ? 'Registrándose...' : 'Registrarse'}
+                </Button>
             </CardFooter>
         </Card>
     )
