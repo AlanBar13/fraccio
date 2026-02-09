@@ -7,6 +7,7 @@ import { useServerFn } from '@tanstack/react-start';
 import { createTenantFn } from '@/lib/tenants';
 import { useToast } from '@/components/notifications';
 import { DataTable } from '@/components/shared';
+import { logger } from '@/utils/logger';
 
 const slugify = (value: string) => {
     return value
@@ -30,8 +31,7 @@ export default function FraccContainer({ tenants }: Props) {
 
     const onSubmit = async () => {
         try {
-            const result = await createTenant({ data: { name, subdomain } });
-            console.log('Created tenant:', result);
+            await createTenant({ data: { name, subdomain } });
             addToast({
                 type: 'success',
                 description: 'Fraccionamiento creado existosamente',
@@ -39,7 +39,7 @@ export default function FraccContainer({ tenants }: Props) {
             })
             setOpen(false);
         } catch (error) {
-            console.error('Error creating tenant:', error);
+            logger('error', 'Error creating tenant:', { error });
             addToast({
                 type: 'error',
                 description: 'Error al crear el fraccionamiento',

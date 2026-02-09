@@ -8,9 +8,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { createHouseFn } from "@/lib/houses";
 import { useToast } from "../notifications";
 import { Database } from '@/database.types';
+import { logger } from "@/utils/logger";
 
 interface Props {
-    houses: Array<any>
+    houses: Array<Database['public']['Tables']['houses']['Row']>
     tenantId: string
 }
 
@@ -23,12 +24,11 @@ export default function CasasContainer({ houses, tenantId }: Props) {
 
     const onSubmit = async () => {
         try {
-            const newHouse = await createHouse({ data: {
+            await createHouse({ data: {
                 tenantId,
                 name: name,
                 address: address
             }})
-            console.log('Created house:', newHouse);
             addToast({
                 type: 'success',
                 description: 'Casa creada existosamente',
@@ -36,7 +36,7 @@ export default function CasasContainer({ houses, tenantId }: Props) {
             })
         }
         catch (error) {
-            console.error('Error creating house:', error);
+            logger('error', 'Error creating house:', { error })
             addToast({
                 type: 'error',
                 description: 'Error al crear la casa',

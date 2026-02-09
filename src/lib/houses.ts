@@ -2,6 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { getSupabaseClient } from './supabase'
 import { z } from 'zod'
 import { getUser } from './user'
+import { logger } from '@/utils/logger'
 
 const createHouseInputSchema = z.object({
     tenantId: z.uuid(),
@@ -28,6 +29,7 @@ export const getHousesFn = createServerFn({ method: 'GET' })
             if (error.code === 'PGRST116') {
                 return []
             }
+            logger('error', 'Error fetching houses:', { error })
             throw error
         }
         return houses
@@ -53,7 +55,7 @@ export const createHouseFn = createServerFn({ method: 'POST' })
             }).select().single()
 
         if (error) {
-            console.error('Error creating house:', error)
+            logger('error', 'Error creating house:', { error })
             throw error
         }
 

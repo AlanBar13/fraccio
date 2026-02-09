@@ -7,6 +7,7 @@ import { FormModal } from "@/components/modals";
 import { FormField, Select } from "@/components/forms";
 import { Input } from "../ui/input";
 import { Database } from "@/database.types";
+import { logger } from "@/utils/logger";
 
 interface Props {
     tenantId: string
@@ -37,7 +38,7 @@ export default function UsersContainer({ tenantId, houses }: Props) {
                 duration: 5000
             })
         } catch (error) {
-            console.error('Error creating house:', error);
+            logger('error', 'Error inviting user:', { error })
             addToast({
                 type: 'error',
                 description: 'Error al invitar al usuario',

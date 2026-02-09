@@ -1,5 +1,6 @@
 import Signup from '@/components/Signup'
 import { getInviteFn, removeInviteFn } from '@/lib/invites'
+import { logger } from '@/utils/logger'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/accept-invite')({
@@ -12,6 +13,7 @@ export const Route = createFileRoute('/accept-invite')({
   loader: async ({ deps: { token } }) => {
     const invite = await getInviteFn({ data: { token } })
     if ( invite?.expires_at && new Date(invite.expires_at) < new Date() ) {
+      logger('warn', 'Invite expired:', { token })
       await removeInviteFn({ data: { token } })
       return { invite: null }
     }

@@ -1,6 +1,8 @@
 import { SidebarNav } from '@/components/navigation'
+import { useToast } from '@/components/notifications'
 import { getTenantFn } from '@/lib/tenants'
 import { getUser, logoutFn } from '@/lib/user'
+import { logger } from '@/utils/logger'
 import { createFileRoute, isRedirect, Outlet, redirect, useRouter } from '@tanstack/react-router'
 import { Banknote, BookOpen, Building, House, Mail, UserPen } from 'lucide-react'
 
@@ -10,6 +12,7 @@ export const Route = createFileRoute('/$tenantId')({
             const user = await getUser()
             const tenant = await getTenantFn({ data: { path: params.tenantId } })
             if (!tenant) {
+                logger('warn', 'Tenant not found:', { tenantId: params.tenantId })
                 throw redirect({ to: '/not-found' })
             }
 
@@ -20,11 +23,13 @@ export const Route = createFileRoute('/$tenantId')({
 
             // Check if user belongs to tenant
             if (user.tenantId !== tenant.id) {
+                logger('warn', 'User does not belong to tenant:', { userEmail: user.email, tenantId: tenant.id })
                 throw redirect({ to: '/user-not-in-fracc' })
             }
 
             return { tenant, user }
         } catch (error) {
+            logger('error', 'Tenant route error in beforeLoad:', { error })
             if (isRedirect(error)) throw error
             throw redirect({ to: '/login' })
         }
@@ -44,6 +49,7 @@ export const Route = createFileRoute('/$tenantId')({
 })
 
 function RouteComponent() {
+    const { addToast } = useToast()
     const { user } = Route.useRouteContext()
     const route = useRouter()
     const params = Route.useParams()
@@ -57,7 +63,8 @@ function RouteComponent() {
             await logoutFn()
             route.navigate({ to: '/login', replace: true })
         } catch (error) {
-            console.error('Logout error:', error)
+            logger('error', 'Error during logout:', { error })
+            addToast({ type: 'error', description: 'Error al cerrar sesión. Inténtalo de nuevo.', duration: 10000 })
         }
     }
 

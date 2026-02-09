@@ -1,10 +1,12 @@
 import { SidebarNav } from '@/components/navigation'
+import { useToast } from '@/components/notifications'
 import { getUser, logoutFn } from '@/lib/user'
+import { logger } from '@/utils/logger'
 import { createFileRoute, isRedirect, Outlet, redirect, useRouter } from '@tanstack/react-router'
 import { Building, House, Users } from 'lucide-react'
 
 export const Route = createFileRoute('/admin')({
-  beforeLoad: async () => {
+    beforeLoad: async () => {
         try {
             const user = await getUser()
             if (user.role !== "superadmin") {
@@ -13,20 +15,22 @@ export const Route = createFileRoute('/admin')({
 
             return { user }
         } catch (error) {
+            logger('error', 'Error in admin route beforeLoad:', { error })
             if (isRedirect(error)) throw error
             throw redirect({ to: '/login' })
         }
     },
-  component: RouteComponent,
-  head: () => ({
-    meta: [
-        { title: 'Admin Dashboard | Fraccio' }
-    ]
-  })
+    component: RouteComponent,
+    head: () => ({
+        meta: [
+            { title: 'Admin Dashboard | Fraccio' }
+        ]
+    })
 })
 
 function RouteComponent() {
-  const route = useRouter()
+    const { addToast } = useToast()
+    const route = useRouter()
     const onRouteChange = (path: string) => {
         route.navigate({ to: `/admin/${path}` })
     }
@@ -36,7 +40,8 @@ function RouteComponent() {
             await logoutFn()
             route.navigate({ to: '/login', replace: true })
         } catch (error) {
-            console.error('Logout error:', error)
+            logger('error', 'Error during logout:', { error })
+            addToast({ type: 'error', description: 'Error al cerrar sesión. Inténtalo de nuevo.', duration: 10000 })
         }
     }
     return (

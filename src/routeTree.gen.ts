@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UserNotInFraccRouteImport } from './routes/user-not-in-fracc'
-import { Route as SignupRouteImport } from './routes/signup'
 import { Route as NotFoundRouteImport } from './routes/not-found'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AcceptInviteRouteImport } from './routes/accept-invite'
@@ -32,11 +31,6 @@ import { Route as TenantIdAdminCasasRouteImport } from './routes/$tenantId/admin
 const UserNotInFraccRoute = UserNotInFraccRouteImport.update({
   id: '/user-not-in-fracc',
   path: '/user-not-in-fracc',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotFoundRoute = NotFoundRouteImport.update({
@@ -132,7 +126,6 @@ export interface FileRoutesByFullPath {
   '/accept-invite': typeof AcceptInviteRoute
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
-  '/signup': typeof SignupRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
   '/$tenantId/adminCasas': typeof TenantIdAdminCasasRoute
   '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
@@ -151,7 +144,6 @@ export interface FileRoutesByTo {
   '/accept-invite': typeof AcceptInviteRoute
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
-  '/signup': typeof SignupRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
   '/$tenantId/adminCasas': typeof TenantIdAdminCasasRoute
   '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
@@ -173,7 +165,6 @@ export interface FileRoutesById {
   '/accept-invite': typeof AcceptInviteRoute
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
-  '/signup': typeof SignupRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
   '/$tenantId/adminCasas': typeof TenantIdAdminCasasRoute
   '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
@@ -196,7 +187,6 @@ export interface FileRouteTypes {
     | '/accept-invite'
     | '/login'
     | '/not-found'
-    | '/signup'
     | '/user-not-in-fracc'
     | '/$tenantId/adminCasas'
     | '/$tenantId/anuncios'
@@ -215,7 +205,6 @@ export interface FileRouteTypes {
     | '/accept-invite'
     | '/login'
     | '/not-found'
-    | '/signup'
     | '/user-not-in-fracc'
     | '/$tenantId/adminCasas'
     | '/$tenantId/anuncios'
@@ -236,7 +225,6 @@ export interface FileRouteTypes {
     | '/accept-invite'
     | '/login'
     | '/not-found'
-    | '/signup'
     | '/user-not-in-fracc'
     | '/$tenantId/adminCasas'
     | '/$tenantId/anuncios'
@@ -258,7 +246,6 @@ export interface RootRouteChildren {
   AcceptInviteRoute: typeof AcceptInviteRoute
   LoginRoute: typeof LoginRoute
   NotFoundRoute: typeof NotFoundRoute
-  SignupRoute: typeof SignupRoute
   UserNotInFraccRoute: typeof UserNotInFraccRoute
 }
 
@@ -269,13 +256,6 @@ declare module '@tanstack/react-router' {
       path: '/user-not-in-fracc'
       fullPath: '/user-not-in-fracc'
       preLoaderRoute: typeof UserNotInFraccRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/not-found': {
@@ -449,7 +429,6 @@ const rootRouteChildren: RootRouteChildren = {
   AcceptInviteRoute: AcceptInviteRoute,
   LoginRoute: LoginRoute,
   NotFoundRoute: NotFoundRoute,
-  SignupRoute: SignupRoute,
   UserNotInFraccRoute: UserNotInFraccRoute,
 }
 export const routeTree = rootRouteImport

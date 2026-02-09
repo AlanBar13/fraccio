@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getSupabaseClient } from './supabase'
 import { z } from 'zod'
+import { logger } from '@/utils/logger'
 
 const loginSchema = z.object({
     email: z.string(),
@@ -35,14 +36,17 @@ export const getUser = createServerFn({ method: 'GET' })
         const supabase = getSupabaseClient()
         const { data, error } = await supabase.auth.getUser()
         if (error) {
+            logger('error', 'Error fetching user:', { error })
             throw error
         }
 
         if (!data.user) {
+            logger('error', 'Error fetching user:', { error })
             throw new Error('User not found')
         }
         const { data: profile, error: profileError } = await supabase.from('profiles').select("full_name, role, tenant_id").eq('id', data.user.id).single()
         if (!profile || profileError) {
+            logger('error', 'Error fetching profile:', { error: profileError })
             throw new Error('Profile not found')
         }
 
@@ -64,6 +68,7 @@ export const loginFn = createServerFn({ method: 'POST' })
         })
 
         if (error) {
+            logger('error', 'Error logging in:', { error })
             return {
                 error: true,
                 message: error.message
@@ -71,6 +76,7 @@ export const loginFn = createServerFn({ method: 'POST' })
         }
 
         if (!auth.user) {
+            logger('error', 'Error logging in: User not found', { user: data.email })
             return {
                 error: true,
                 message: 'User not found'
@@ -79,6 +85,7 @@ export const loginFn = createServerFn({ method: 'POST' })
 
         const { data: profile, error: profileError } = await supabase.from('profiles').select("role, tenant_id").eq('id', auth.user.id).single()
         if (!profile || profileError) {
+            logger('error', 'Error fetching profile after login:', { error: profileError })
             return {
                 error: true,
                 message: 'Profile not found'
@@ -101,6 +108,7 @@ export const signupFn = createServerFn({ method: 'POST' })
         
         const { error } = await supabase.auth.signOut();
         if (error) {
+            logger('error', 'Error signing out before signup:', { error })
             throw error
         }
 
@@ -117,6 +125,7 @@ export const signupFn = createServerFn({ method: 'POST' })
         })
 
         if (signupError) {
+            logger('error', 'Error signing up:', { error: signupError })
             return {
                 error: true,
                 message: signupError.message
@@ -125,7 +134,7 @@ export const signupFn = createServerFn({ method: 'POST' })
 
         const { error: deleteInviteError } = await supabase.from('invites').delete().eq('id', data.inviteId)
         if (deleteInviteError) {
-            console.error('Error deleting invite:', deleteInviteError)
+            logger('error', 'Error deleting invite:', { error: deleteInviteError })
         }
 
         return {
@@ -139,6 +148,7 @@ export const logoutFn = createServerFn({ method: 'POST' })
         const supabase = await getSupabaseClient()
         const { error } = await supabase.auth.signOut();
         if (error) {
+            logger('error', 'Error logging out:', { error })
             throw error
         }
         
@@ -158,6 +168,7 @@ export const inviteUserFn = createServerFn({ method: 'POST' })
             .single()
 
         if (existingInvite) {
+            logger('warn', 'User already invited:', { email: data.email, tenantId: data.tenantId })
             return { error: true, message: 'User already invited' }
         }
 
@@ -175,6 +186,7 @@ export const inviteUserFn = createServerFn({ method: 'POST' })
             .single()
 
         if (error) {
+            logger('error', 'Error creating invite:', { error })
             throw error
         }
 

@@ -14,6 +14,7 @@ import { useServerFn } from "@tanstack/react-start"
 import { useState } from "react"
 import { loginFn } from "@/lib/user"
 import { getTenantByIdFn } from "@/lib/tenants"
+import { logger } from "@/utils/logger"
 
 export default function Login() {
     const router = useRouter()
@@ -24,25 +25,36 @@ export default function Login() {
     const getTenant = useServerFn(getTenantByIdFn)
 
     const handleLogin = async () => {
-        setIsLoading(true)
-        const { tenantId, role, error } = await login({ data: { email, password } })
-        if (error) {
-            console.log(error)
-            return
-        }
+        try {
+            setIsLoading(true)
+            const { tenantId, role, error } = await login({ data: { email, password } })
+            if (error) {
+                logger('error', 'Error logging in:', { error });
+                return
+            }
 
-        if (role === 'superadmin') {
-            router.navigate({ to: '/admin' })
-            return
-        }
-        
-        if (!tenantId) {
-            console.error('No tenant assigned to user')
-            return
-        }
+            if (role === 'superadmin') {
+                router.navigate({ to: '/admin' })
+                return
+            }
 
-        const tenant = await getTenant({ data: { id: tenantId } })
-        router.navigate({ to: `/${tenant.path}` })
+            if (!tenantId) {
+                logger('error', 'No tenant assigned to user');
+                return
+            }
+
+            const tenant = await getTenant({ data: { id: tenantId } })
+            if (!tenant) {
+                logger('error', 'Tenant not found for user:', { tenantId });
+                return
+            }
+            router.navigate({ to: `/${tenant.path}` })
+        } catch (error) {
+            logger('error', 'Login error:', { error })
+        }
+        finally {
+            setIsLoading(false)
+        }
     }
 
     return (

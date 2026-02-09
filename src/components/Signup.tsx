@@ -16,6 +16,7 @@ import { useRouter } from "@tanstack/react-router"
 import { Database } from "@/database.types"
 import { useToast } from "./notifications"
 import { removeInviteFn } from "@/lib/invites"
+import { logger } from "@/utils/logger"
 
 interface Props {
     invite: Database['public']['Tables']['invites']['Row']
@@ -52,7 +53,7 @@ export default function Signup({ invite }: Props) {
                 data: { email, password, name, tenantId: invite.tenant_id, inviteId: invite.id }
             })
             if (error) {
-                console.log(error)
+                logger('error', 'Error during signup:', { error });
                 addToast({
                     type: 'error',
                     description: `Error al registrarse`,
@@ -63,7 +64,7 @@ export default function Signup({ invite }: Props) {
             await removeInvite({ data: { token: invite.id } })
             router.navigate({ to: '/login' })
         } catch (error) {
-            console.error('Signup error:', error)
+            logger('error', 'Signup error:', { error })
             addToast({
                 type: 'error',
                 description: `Error al registrarse'}`,

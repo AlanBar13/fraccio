@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getSupabaseClient } from './supabase'
 import { z } from 'zod'
+import { logger } from '@/utils/logger'
 
 const createTenantSchema = z.object({
     name: z.string().min(3),
@@ -12,6 +13,7 @@ export const listTenantsFn = createServerFn({ method: 'GET' })
         const supabase = getSupabaseClient()
         const { data: tenants, error } = await supabase.from('tenants').select('*')
         if (error) {
+            logger('error', 'Error fetching tenants:', { error })
             throw error
         }
         return tenants
@@ -26,6 +28,7 @@ export const getTenantFn = createServerFn({ method: 'GET' })
             if (error.code === 'PGRST116') {
                 return null
             }
+            logger('error', 'Error fetching tenant:', { error })
             throw error
         }
         if (!tenant) {
@@ -44,6 +47,7 @@ export const getTenantByIdFn = createServerFn({ method: 'GET' })
             if (error.code === 'PGRST116') {
                 return null
             }
+            logger('error', 'Error fetching tenant by ID:', { id: data.id, error })
             throw error
         }
         if (!tenant) {
@@ -63,6 +67,7 @@ export const createTenantFn = createServerFn({ method: 'POST' })
         }).select().single();
 
         if (error) {
+            logger('error', 'Error creating tenant:', { error })
             throw error
         }
 
