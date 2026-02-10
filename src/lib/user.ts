@@ -2,6 +2,8 @@ import { createServerFn } from '@tanstack/react-start'
 import { getSupabaseClient } from './supabase'
 import { z } from 'zod'
 import { logger } from '@/utils/logger'
+import { createHouseOwnerQuery } from './house_owners/queries'
+import { createHouseUserQuery } from './house_users/queries'
 
 const loginSchema = z.object({
     email: z.string(),
@@ -13,15 +15,17 @@ const signupSchema = z.object({
     name: z.string(),
     password: z.string().min(6),
     tenantId: z.uuid(),
-    inviteId: z.uuid()
+    inviteId: z.uuid(),
+    houseId: z.number(),
+    houseOwner: z.boolean()
 })
 
-const inviteUserSchema = z.object({ 
-    email: z.email(), 
-    tenantId: z.uuid(), 
-    house_id: z.number(), 
-    house_owner: z.boolean(), 
-    name: z.string() 
+const inviteUserSchema = z.object({
+    email: z.email(),
+    tenantId: z.uuid(),
+    house_id: z.number(),
+    house_owner: z.boolean(),
+    name: z.string()
 })
 
 interface LoginData {
@@ -105,21 +109,22 @@ export const signupFn = createServerFn({ method: 'POST' })
     .inputValidator(signupSchema)
     .handler(async ({ data }) => {
         const supabase = getSupabaseClient()
-        
+
         const { error } = await supabase.auth.signOut();
         if (error) {
             logger('error', 'Error signing out before signup:', { error })
             throw error
         }
 
-        const { error: signupError } = await supabase.auth.signUp({
+        const { data: signupData, error: signupError } = await supabase.auth.signUp({
             email: data.email,
             password: data.password,
             options: {
                 data: {
                     tenant_id: data.tenantId,
                     full_name: data.name,
-                    role: "user"
+                    role: "user",
+                    house_owner: data.houseOwner
                 }
             }
         })
@@ -129,6 +134,28 @@ export const signupFn = createServerFn({ method: 'POST' })
             return {
                 error: true,
                 message: signupError.message
+            }
+        }
+
+        if (signupData.user) {
+            if (data.houseOwner) {
+                const { error: houseOwnerError } = await createHouseOwnerQuery(supabase, data.houseId, signupData.user.id)
+                if (houseOwnerError) {
+                    logger('error', 'Error creating house owner:', { error: houseOwnerError })
+                    return {
+                        error: true,
+                        message: houseOwnerError.message
+                    }
+                }
+            }
+
+            const { error: houseUserError } = await createHouseUserQuery(supabase, data.houseId, signupData.user.id)
+            if (houseUserError) {
+                logger('error', 'Error creating house user:', { error: houseUserError })
+                return {
+                    error: true,
+                    message: houseUserError.message
+                }
             }
         }
 
@@ -151,7 +178,7 @@ export const logoutFn = createServerFn({ method: 'POST' })
             logger('error', 'Error logging out:', { error })
             throw error
         }
-        
+
         return { error: false, message: 'User logged out' }
     })
 
@@ -192,4 +219,21 @@ export const inviteUserFn = createServerFn({ method: 'POST' })
 
         // send email to user with invite link (${DOMAIN}/accept-invite?token=${inviteData.id})
         return { error: false, message: 'User invited', data: inviteData }
+    })
+
+export const getTenantUsersFn = createServerFn({ method: 'POST' })
+    .inputValidator(z.object({ tenantId: z.uuid() }))
+    .handler(async ({ data }) => {
+        const supabase = getSupabaseClient()
+        const { data: users, error } = await supabase
+            .from('profiles')
+            .select('id, full_name, house_owner')
+            .eq('tenant_id', data.tenantId)
+
+        if (error) {
+            logger('error', 'Error fetching tenant users:', { error, tenantId: data.tenantId })
+            throw error
+        }
+
+        return users
     })

@@ -1,5 +1,5 @@
 import Signup from '@/components/Signup'
-import { getInviteFn, removeInviteFn } from '@/lib/invites'
+import { getInviteFn, removeInviteFn } from '@/lib/invites/functions'
 import { logger } from '@/utils/logger'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -19,6 +19,13 @@ export const Route = createFileRoute('/accept-invite')({
     }
     return { invite }
   },
+  head: () => ({
+    meta: [
+      {
+        title: 'Aceptar Invitación | Fraccio'
+      }
+    ]
+  }),
   component: RouteComponent,
 })
 

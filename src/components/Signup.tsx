@@ -13,13 +13,13 @@ import { useEffect, useState } from "react"
 import { useServerFn } from "@tanstack/react-start"
 import { signupFn } from "@/lib/user"
 import { useRouter } from "@tanstack/react-router"
-import { Database } from "@/database.types"
+import { GetInviteQueryResult } from "@/lib/invites/queries"
 import { useToast } from "./notifications"
-import { removeInviteFn } from "@/lib/invites"
+import { removeInviteFn } from "@/lib/invites/functions"
 import { logger } from "@/utils/logger"
 
 interface Props {
-    invite: Database['public']['Tables']['invites']['Row']
+    invite: GetInviteQueryResult; //Database['public']['Tables']['invites']['Row']
 }
 
 export default function Signup({ invite }: Props) {
@@ -50,7 +50,15 @@ export default function Signup({ invite }: Props) {
             }
             setLoading(true)
             const { error } = await signupWithTenant({
-                data: { email, password, name, tenantId: invite.tenant_id, inviteId: invite.id }
+                data: { 
+                    email, 
+                    password, 
+                    name, 
+                    tenantId: invite.tenant_id, 
+                    inviteId: invite.id,
+                    houseId: invite.house_id, 
+                    houseOwner: invite.house_owner ?? false 
+                }
             })
             if (error) {
                 logger('error', 'Error during signup:', { error });
