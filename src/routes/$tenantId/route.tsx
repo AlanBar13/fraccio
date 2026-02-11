@@ -29,7 +29,6 @@ export const Route = createFileRoute('/$tenantId')({
 
             return { tenant, user }
         } catch (error) {
-            logger('error', 'Tenant route error in beforeLoad:', { error })
             if (isRedirect(error)) throw error
             throw redirect({ to: '/login' })
         }

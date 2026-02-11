@@ -8,13 +8,16 @@ import { FormField, Select } from "@/components/forms";
 import { Input } from "../ui/input";
 import { Database } from "@/database.types";
 import { logger } from "@/utils/logger";
+import { DataTable } from "../shared";
+import { GetTenantUsersQueryResult } from "@/lib/profiles/queries";
 
 interface Props {
     tenantId: string
     houses: Array<Database['public']['Tables']['houses']['Row']>
+    users: GetTenantUsersQueryResult
 }
 
-export default function UsersContainer({ tenantId, houses }: Props) {
+export default function UsersContainer({ tenantId, houses, users }: Props) {
     const { addToast } = useToast()
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
@@ -25,13 +28,15 @@ export default function UsersContainer({ tenantId, houses }: Props) {
 
     const onSubmit = async () => {
         try {
-            await inviteUser({ data: {
-                email,
-                name,
-                tenantId,
-                house_id: houseId,
-                house_owner: owner
-            }})
+            await inviteUser({
+                data: {
+                    email,
+                    name,
+                    tenantId,
+                    house_id: houseId,
+                    house_owner: owner
+                }
+            })
             addToast({
                 type: 'success',
                 description: `Invitación enviada a ${email} correctamente`,
@@ -57,7 +62,7 @@ export default function UsersContainer({ tenantId, houses }: Props) {
     return (
         <div>
             <Button className="mt-4" onClick={() => setOpen(true)}>Invitar usuario</Button>
-            <FormModal 
+            <FormModal
                 open={open}
                 onOpenChange={setOpen}
                 title="Invitar Usuario"
@@ -94,6 +99,28 @@ export default function UsersContainer({ tenantId, houses }: Props) {
                     />
                 </FormField>
             </FormModal>
+            <div className='mt-6'>
+                <DataTable
+                    data={users}
+                    columns={[
+                        { key: 'full_name', label: 'Nombre' },
+                        { key: 'email', label: 'Email' },
+                        {
+                            key: 'house_users',
+                            label: 'Casa',
+                            render: (value: any[]) => {
+                                if (!value || value.length === 0) return '-';
+                                return value[0]?.houses?.name || '-';
+                            }
+                        },
+                        { key: 'house_owner', label: 'Es dueño de la casa' }
+                    ]}
+                    striped
+                    actions
+                    onEdit={() => { }}
+                    onDelete={() => { }}
+                />
+            </div>
         </div>
     )
 }

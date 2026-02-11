@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { logger } from '@/utils/logger'
 import { createHouseOwnerQuery } from './house_owners/queries'
 import { createHouseUserQuery } from './house_users/queries'
+import { getTenantUsersQuery } from './profiles/queries'
 
 const loginSchema = z.object({
     email: z.string(),
@@ -225,10 +226,8 @@ export const getTenantUsersFn = createServerFn({ method: 'POST' })
     .inputValidator(z.object({ tenantId: z.uuid() }))
     .handler(async ({ data }) => {
         const supabase = getSupabaseClient()
-        const { data: users, error } = await supabase
-            .from('profiles')
-            .select('id, full_name, house_owner')
-            .eq('tenant_id', data.tenantId)
+        const { data: users, error } = await getTenantUsersQuery(supabase, data.tenantId)
+        console.log('Fetched tenant users:', { users: JSON.stringify(users), tenantId: data.tenantId })
 
         if (error) {
             logger('error', 'Error fetching tenant users:', { error, tenantId: data.tenantId })
