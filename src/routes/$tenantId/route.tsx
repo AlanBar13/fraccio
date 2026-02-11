@@ -1,10 +1,13 @@
-import { SidebarNav } from '@/components/navigation'
 import { useToast } from '@/components/notifications'
 import { getTenantFn } from '@/lib/tenants'
 import { getUser, logoutFn } from '@/lib/user'
 import { logger } from '@/utils/logger'
-import { createFileRoute, isRedirect, Outlet, redirect, useRouter } from '@tanstack/react-router'
-import { Banknote, BookOpen, Building, House, Mail, UserPen } from 'lucide-react'
+import { createFileRoute, isRedirect, Link, Outlet, redirect, useRouter } from '@tanstack/react-router'
+import { Banknote, BookOpen, Building, House, Mail, UserPen, Menu, X, LogOut, LayoutDashboard, User, ChevronDown } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
 
 export const Route = createFileRoute('/$tenantId')({
     beforeLoad: async ({ params }) => {
@@ -35,58 +38,316 @@ export const Route = createFileRoute('/$tenantId')({
     },
     component: RouteComponent,
     head: async ({ params }) => {
-    const tenant = await getTenantFn({ data: { path: params.tenantId } })
+        const tenant = await getTenantFn({ data: { path: params.tenantId } })
 
-    return {
-      meta: [
-        {
-          title: `${tenant ? tenant.name : 'Fraccionamiento'} | Fraccio`
+        return {
+            meta: [
+                {
+                    title: `${tenant ? tenant.name : 'Fraccionamiento'} | Fraccio`
+                }
+            ]
         }
-      ]
     }
-  }
 })
 
 function RouteComponent() {
     const { addToast } = useToast()
-    const { user } = Route.useRouteContext()
-    const route = useRouter()
+    const { tenant, user } = Route.useRouteContext()
+    const router = useRouter()
     const params = Route.useParams()
-
-    const onRouteChange = (path: string) => {
-        route.navigate({ to: `/${params.tenantId}${path}` })
-    }
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+    const [isProfileOpen, setIsProfileOpen] = useState(false)
 
     const onLogout = async () => {
         try {
             await logoutFn()
-            route.navigate({ to: '/login', replace: true })
+            router.navigate({ to: '/login', replace: true })
         } catch (error) {
             logger('error', 'Error during logout:', { error })
             addToast({ type: 'error', description: 'Error al cerrar sesión. Inténtalo de nuevo.', duration: 10000 })
         }
     }
 
+    const getRoleLabel = (role: string) => {
+        switch (role) {
+            case 'superadmin':
+                return 'Super Admin'
+            case 'admin':
+                return 'Administrador'
+            case 'user':
+                return 'Residente'
+            default:
+                return role
+        }
+    }
+
+    const navItems = [
+        {
+            id: '1',
+            label: 'Dashboard',
+            path: `/${params.tenantId}/`,
+            icon: LayoutDashboard,
+            exact: true
+        },
+        {
+            id: '2',
+            label: 'Anuncios',
+            path: `/${params.tenantId}/anuncios`,
+            icon: Mail
+        },
+        {
+            id: '3',
+            label: 'Mi Casa',
+            path: `/${params.tenantId}/casa`,
+            icon: House
+        },
+        {
+            id: '4',
+            label: 'Pagos',
+            path: `/${params.tenantId}/pagos`,
+            icon: Banknote
+        },
+        {
+            id: '5',
+            label: 'Documentos',
+            path: `/${params.tenantId}/documentos`,
+            icon: BookOpen
+        }
+    ]
+
+    const adminNavItems = [
+        {
+            id: '6',
+            label: 'Usuarios',
+            path: `/${params.tenantId}/usuarios`,
+            icon: UserPen,
+            allowedRoles: ['admin', 'superadmin']
+        },
+        {
+            id: '7',
+            label: 'Administrar Casas',
+            path: `/${params.tenantId}/adminCasas`,
+            icon: Building,
+            allowedRoles: ['admin', 'superadmin']
+        }
+    ]
+
+    const filteredAdminItems = adminNavItems.filter(item =>
+        !item.allowedRoles || item.allowedRoles.includes(user.role)
+    )
+
+    const allNavItems = [...navItems, ...filteredAdminItems]
+
     return (
-        <div className="flex h-screen">
-            <aside className="w-45 border-r border-border/50 bg-card p-4">
-                <SidebarNav role={user.role} items={[
-                    { id: '1', label: 'Dashboard', onClick: () => onRouteChange('/'), icon: <Building /> },
-                    { id: '2', label: 'Anuncios', onClick: () => onRouteChange('/anuncios'), icon: <Mail /> },
-                    { id: '3', label: 'Casa', onClick: () => onRouteChange('/casa'), icon: <House /> },
-                    { id: '4', label: 'Pagos', onClick: () => onRouteChange('/pagos'), icon: <Banknote /> },
-                    { id: '5', label: 'Documentos', onClick: () => onRouteChange('/documentos'), icon: <BookOpen /> },
-                    { id: '6', label: 'Usuarios', onClick: () => onRouteChange('/usuarios'), allowedRoles: ['admin', 'superadmin'], icon: <UserPen /> },
-                    { id: '7', label: 'Administrar Casas', onClick: () => onRouteChange('/adminCasas'), allowedRoles: ['admin', 'superadmin'], icon: <Building /> },
-                    {
-                        id: '8', label: 'Perfil', icon: <UserPen />, children: [
-                            { id: '7.1', label: 'Ver Perfil', onClick: () => onRouteChange('/perfil') },
-                            { id: '7.2', label: 'Cerrar Sesión', onClick: () => onLogout() }
-                        ]
-                    },
-                ]} />
+        <div className="min-h-screen bg-background">
+            {/* Top Navbar - Mobile & Desktop */}
+            <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
+                <div className="flex h-16 items-center justify-between px-4 lg:px-6">
+                    {/* Logo & Brand */}
+                    <div className="flex items-center gap-3">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden"
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                        >
+                            {isSidebarOpen ? (
+                                <X className="h-5 w-5" />
+                            ) : (
+                                <Menu className="h-5 w-5" />
+                            )}
+                        </Button>
+                        <Link to={`/${params.tenantId}/`} className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+                                <Building className="h-5 w-5 text-primary-foreground" />
+                            </div>
+                            <div className="hidden sm:block">
+                                <h1 className="text-xl font-bold">{tenant.name}</h1>
+                                <p className="text-xs text-muted-foreground">/{tenant.path}</p>
+                            </div>
+                        </Link>
+                    </div>
+
+                    {/* Desktop Navigation */}
+                    <nav className="hidden lg:flex items-center gap-2">
+                        {navItems.map((item) => {
+                            const Icon = item.icon
+                            const isActive = item.exact
+                                ? window.location.pathname === item.path
+                                : window.location.pathname.startsWith(item.path) && item.path !== `/${params.tenantId}/`
+
+                            return (
+                                <Link key={item.id} to={item.path}>
+                                    <Button
+                                        variant={isActive ? "secondary" : "ghost"}
+                                        size="sm"
+                                        className="gap-2"
+                                    >
+                                        <Icon className="h-4 w-4" />
+                                        {item.label}
+                                    </Button>
+                                </Link>
+                            )
+                        })}
+
+                        {/* Admin Items Dropdown */}
+                        {filteredAdminItems.length > 0 && (
+                            <div className="relative">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="gap-2"
+                                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                                >
+                                    <Building className="h-4 w-4" />
+                                    Admin
+                                    <ChevronDown className="h-4 w-4" />
+                                </Button>
+                                {isProfileOpen && (
+                                    <>
+                                        <div
+                                            className="fixed inset-0 z-40"
+                                            onClick={() => setIsProfileOpen(false)}
+                                        />
+                                        <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border bg-card p-2 shadow-lg z-50">
+                                            {filteredAdminItems.map((item) => {
+                                                const Icon = item.icon
+                                                return (
+                                                    <Link
+                                                        key={item.id}
+                                                        to={item.path}
+                                                        onClick={() => setIsProfileOpen(false)}
+                                                    >
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="w-full justify-start gap-2"
+                                                        >
+                                                            <Icon className="h-4 w-4" />
+                                                            {item.label}
+                                                        </Button>
+                                                    </Link>
+                                                )
+                                            })}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        )}
+                    </nav>
+
+                    {/* User Info & Actions */}
+                    <div className="flex items-center gap-3">
+                        <div className="hidden md:flex items-center gap-3 px-3 py-2 rounded-lg bg-muted/50">
+                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                <User className="h-4 w-4 text-primary" />
+                            </div>
+                            <div className="text-sm">
+                                <p className="font-medium">{user.full_name}</p>
+                                <p className="text-xs text-muted-foreground">{getRoleLabel(user.role)}</p>
+                            </div>
+                        </div>
+                        <Link to={`/${params.tenantId}/perfil`}>
+                            <Button variant="ghost" size="icon" className="hidden lg:flex">
+                                <UserPen className="h-5 w-5" />
+                            </Button>
+                        </Link>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={onLogout}
+                            className="text-muted-foreground hover:text-destructive hidden lg:flex"
+                        >
+                            <LogOut className="h-5 w-5" />
+                        </Button>
+                    </div>
+                </div>
+            </header>
+
+            {/* Mobile Sidebar Overlay */}
+            {isSidebarOpen && (
+                <div
+                    className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm lg:hidden"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
+
+            {/* Mobile Sidebar */}
+            <aside
+                className={cn(
+                    "fixed left-0 top-16 z-40 h-[calc(100vh-4rem)] w-72 border-r bg-card transition-transform duration-300 lg:hidden",
+                    isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+                )}
+            >
+                <div className="flex flex-col h-full">
+                    {/* User Info - Mobile */}
+                    <div className="p-4 border-b">
+                        <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                <User className="h-5 w-5 text-primary" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="font-medium truncate">{user.full_name}</p>
+                                <p className="text-sm text-muted-foreground">{getRoleLabel(user.role)}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Navigation Links */}
+                    <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                        {allNavItems.map((item) => {
+                            const Icon = item.icon
+                            const isActive = item.exact
+                                ? window.location.pathname === item.path
+                                : window.location.pathname.startsWith(item.path) && item.path !== `/${params.tenantId}/`
+
+                            return (
+                                <Link
+                                    key={item.id}
+                                    to={item.path}
+                                    onClick={() => setIsSidebarOpen(false)}
+                                >
+                                    <Button
+                                        variant={isActive ? "secondary" : "ghost"}
+                                        className="w-full justify-start gap-3 h-11"
+                                    >
+                                        <Icon className="h-5 w-5" />
+                                        <span className="text-base">{item.label}</span>
+                                    </Button>
+                                </Link>
+                            )
+                        })}
+                    </nav>
+
+                    {/* Footer Actions - Mobile */}
+                    <div className="p-4 border-t space-y-2">
+                        <Link to={`/${params.tenantId}/perfil`}>
+                            <Button
+                                variant="outline"
+                                className="w-full justify-start gap-3 h-11"
+                                onClick={() => setIsSidebarOpen(false)}
+                            >
+                                <UserPen className="h-5 w-5" />
+                                <span className="text-base">Mi Perfil</span>
+                            </Button>
+                        </Link>
+                        <Button
+                            variant="outline"
+                            className="w-full justify-start gap-3 h-11 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => {
+                                setIsSidebarOpen(false)
+                                onLogout()
+                            }}
+                        >
+                            <LogOut className="h-5 w-5" />
+                            <span className="text-base">Cerrar Sesión</span>
+                        </Button>
+                    </div>
+                </div>
             </aside>
-            <main className="flex-1 overflow-auto bg-background p-6">
+
+            {/* Main Content */}
+            <main className="p-4 md:p-6 lg:p-8">
                 <Outlet />
             </main>
         </div>
