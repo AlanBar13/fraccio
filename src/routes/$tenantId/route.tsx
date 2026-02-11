@@ -7,7 +7,6 @@ import { Banknote, BookOpen, Building, House, Mail, UserPen, Menu, X, LogOut, La
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
-import { Badge } from '@/components/ui/badge'
 
 export const Route = createFileRoute('/$tenantId')({
     beforeLoad: async ({ params }) => {
