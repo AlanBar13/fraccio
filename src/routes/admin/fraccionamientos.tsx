@@ -10,7 +10,6 @@ import { useServerFn } from '@tanstack/react-start'
 import { createTenantFn } from '@/lib/tenants'
 import { useToast } from '@/components/notifications'
 import { logger } from '@/utils/logger'
-import { Badge } from '@/components/ui/badge'
 
 const slugify = (value: string) => {
   return value
@@ -37,7 +36,6 @@ function RouteComponent() {
   const [address, setAddress] = useState('')
   const createTenant = useServerFn(createTenantFn)
   const { addToast } = useToast()
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
   const onSubmit = async () => {
     try {
@@ -208,7 +206,7 @@ function RouteComponent() {
                     <Calendar className="h-3 w-3" />
                     <span>{formatDate(tenant.created_at)}</span>
                   </div>
-                  <Link to={`/${tenant.path}`}>
+                  <Link to={`/$tenantId`} params={{ tenantId: tenant.path }}>
                     <Button size="sm" variant="ghost">
                       Ver detalles
                       <ExternalLink className="h-3 w-3 ml-2" />

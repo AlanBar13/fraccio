@@ -156,7 +156,7 @@ function RouteComponent() {
                                 <Menu className="h-5 w-5" />
                             )}
                         </Button>
-                        <Link to={`/${params.tenantId}/`} className="flex items-center gap-2">
+                        <Link to={`/$tenantId`} params={{ tenantId: params.tenantId }} className="flex items-center gap-2">
                             <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
                                 <Building className="h-5 w-5 text-primary-foreground" />
                             </div>
@@ -246,7 +246,7 @@ function RouteComponent() {
                                 <p className="text-xs text-muted-foreground">{getRoleLabel(user.role)}</p>
                             </div>
                         </div>
-                        <Link to={`/${params.tenantId}/perfil`}>
+                        <Link to={`/$tenantId/perfil`} params={{ tenantId: params.tenantId }}>
                             <Button variant="ghost" size="icon" className="hidden lg:flex">
                                 <UserPen className="h-5 w-5" />
                             </Button>
@@ -320,7 +320,7 @@ function RouteComponent() {
 
                     {/* Footer Actions - Mobile */}
                     <div className="p-4 border-t space-y-2">
-                        <Link to={`/${params.tenantId}/perfil`}>
+                        <Link to={`/$tenantId/perfil`} params={{ tenantId: params.tenantId }}>
                             <Button
                                 variant="outline"
                                 className="w-full justify-start gap-3 h-11"
