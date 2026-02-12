@@ -2,7 +2,7 @@ import { useToast } from '@/components/notifications'
 import { getTenantFn } from '@/lib/tenants'
 import { getUser, logoutFn } from '@/lib/user'
 import { logger } from '@/utils/logger'
-import { createFileRoute, isRedirect, Link, Outlet, redirect, useRouter } from '@tanstack/react-router'
+import { createFileRoute, isRedirect, Link, Outlet, redirect, useRouter, useRouterState } from '@tanstack/react-router'
 import { Banknote, BookOpen, Building, House, Mail, UserPen, Menu, X, LogOut, LayoutDashboard, User, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
@@ -14,7 +14,7 @@ export const Route = createFileRoute('/$tenantId')({
             const user = await getUser()
             const tenant = await getTenantFn({ data: { path: params.tenantId } })
             if (!tenant) {
-                logger('warn', 'Tenant not found:', { tenantId: params.tenantId })
+                logger('warn', 'Tenant not found:', { tenant: params.tenantId })
                 throw redirect({ to: '/not-found' })
             }
 
@@ -53,6 +53,7 @@ function RouteComponent() {
     const { addToast } = useToast()
     const { tenant, user } = Route.useRouteContext()
     const router = useRouter()
+    const routerState = useRouterState()
     const params = Route.useParams()
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const [isProfileOpen, setIsProfileOpen] = useState(false)
@@ -128,6 +129,13 @@ function RouteComponent() {
             path: `/${params.tenantId}/adminCasas`,
             icon: Building,
             allowedRoles: ['admin', 'superadmin']
+        },
+        {
+            id: '8',
+            label: 'Administrar Pagos',
+            path: `/${params.tenantId}/admin-pagos`,
+            icon: Banknote,
+            allowedRoles: ['admin', 'superadmin']
         }
     ]
 
@@ -171,9 +179,7 @@ function RouteComponent() {
                     <nav className="hidden lg:flex items-center gap-2">
                         {navItems.map((item) => {
                             const Icon = item.icon
-                            const isActive = item.exact
-                                ? window.location.pathname === item.path
-                                : window.location.pathname.startsWith(item.path) && item.path !== `/${params.tenantId}/`
+                            const isActive = routerState.location.pathname.startsWith(item.path) && item.path !== `/${params.tenantId}/`
 
                             return (
                                 <Link key={item.id} to={item.path}>
@@ -296,9 +302,7 @@ function RouteComponent() {
                     <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
                         {allNavItems.map((item) => {
                             const Icon = item.icon
-                            const isActive = item.exact
-                                ? window.location.pathname === item.path
-                                : window.location.pathname.startsWith(item.path) && item.path !== `/${params.tenantId}/`
+                            const isActive = routerState.location.pathname.startsWith(item.path) && item.path !== `/${params.tenantId}/`
 
                             return (
                                 <Link

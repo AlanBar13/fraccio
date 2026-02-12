@@ -22,11 +22,15 @@ import { Route as AdminUsuariosRouteImport } from './routes/admin/usuarios'
 import { Route as AdminFraccionamientosRouteImport } from './routes/admin/fraccionamientos'
 import { Route as TenantIdUsuariosRouteImport } from './routes/$tenantId/usuarios'
 import { Route as TenantIdPerfilRouteImport } from './routes/$tenantId/perfil'
-import { Route as TenantIdPagosRouteImport } from './routes/$tenantId/pagos'
 import { Route as TenantIdDocumentosRouteImport } from './routes/$tenantId/documentos'
 import { Route as TenantIdCasaRouteImport } from './routes/$tenantId/casa'
 import { Route as TenantIdAnunciosRouteImport } from './routes/$tenantId/anuncios'
 import { Route as TenantIdAdminCasasRouteImport } from './routes/$tenantId/adminCasas'
+import { Route as TenantIdAdminPagosRouteImport } from './routes/$tenantId/admin-pagos'
+import { Route as TenantIdPagosIndexRouteImport } from './routes/$tenantId/pagos/index'
+import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
+import { Route as TenantIdPagosSuccessRouteImport } from './routes/$tenantId/pagos/success'
+import { Route as TenantIdPagosCancelRouteImport } from './routes/$tenantId/pagos/cancel'
 
 const UserNotInFraccRoute = UserNotInFraccRouteImport.update({
   id: '/user-not-in-fracc',
@@ -93,11 +97,6 @@ const TenantIdPerfilRoute = TenantIdPerfilRouteImport.update({
   path: '/perfil',
   getParentRoute: () => TenantIdRouteRoute,
 } as any)
-const TenantIdPagosRoute = TenantIdPagosRouteImport.update({
-  id: '/pagos',
-  path: '/pagos',
-  getParentRoute: () => TenantIdRouteRoute,
-} as any)
 const TenantIdDocumentosRoute = TenantIdDocumentosRouteImport.update({
   id: '/documentos',
   path: '/documentos',
@@ -118,6 +117,31 @@ const TenantIdAdminCasasRoute = TenantIdAdminCasasRouteImport.update({
   path: '/adminCasas',
   getParentRoute: () => TenantIdRouteRoute,
 } as any)
+const TenantIdAdminPagosRoute = TenantIdAdminPagosRouteImport.update({
+  id: '/admin-pagos',
+  path: '/admin-pagos',
+  getParentRoute: () => TenantIdRouteRoute,
+} as any)
+const TenantIdPagosIndexRoute = TenantIdPagosIndexRouteImport.update({
+  id: '/pagos/',
+  path: '/pagos/',
+  getParentRoute: () => TenantIdRouteRoute,
+} as any)
+const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
+  id: '/api/stripe/webhook',
+  path: '/api/stripe/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TenantIdPagosSuccessRoute = TenantIdPagosSuccessRouteImport.update({
+  id: '/pagos/success',
+  path: '/pagos/success',
+  getParentRoute: () => TenantIdRouteRoute,
+} as any)
+const TenantIdPagosCancelRoute = TenantIdPagosCancelRouteImport.update({
+  id: '/pagos/cancel',
+  path: '/pagos/cancel',
+  getParentRoute: () => TenantIdRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -127,17 +151,21 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
+  '/$tenantId/admin-pagos': typeof TenantIdAdminPagosRoute
   '/$tenantId/adminCasas': typeof TenantIdAdminCasasRoute
   '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
   '/$tenantId/casa': typeof TenantIdCasaRoute
   '/$tenantId/documentos': typeof TenantIdDocumentosRoute
-  '/$tenantId/pagos': typeof TenantIdPagosRoute
   '/$tenantId/perfil': typeof TenantIdPerfilRoute
   '/$tenantId/usuarios': typeof TenantIdUsuariosRoute
   '/admin/fraccionamientos': typeof AdminFraccionamientosRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/$tenantId/': typeof TenantIdIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/$tenantId/pagos/cancel': typeof TenantIdPagosCancelRoute
+  '/$tenantId/pagos/success': typeof TenantIdPagosSuccessRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/$tenantId/pagos/': typeof TenantIdPagosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -145,17 +173,21 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
+  '/$tenantId/admin-pagos': typeof TenantIdAdminPagosRoute
   '/$tenantId/adminCasas': typeof TenantIdAdminCasasRoute
   '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
   '/$tenantId/casa': typeof TenantIdCasaRoute
   '/$tenantId/documentos': typeof TenantIdDocumentosRoute
-  '/$tenantId/pagos': typeof TenantIdPagosRoute
   '/$tenantId/perfil': typeof TenantIdPerfilRoute
   '/$tenantId/usuarios': typeof TenantIdUsuariosRoute
   '/admin/fraccionamientos': typeof AdminFraccionamientosRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/$tenantId': typeof TenantIdIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/$tenantId/pagos/cancel': typeof TenantIdPagosCancelRoute
+  '/$tenantId/pagos/success': typeof TenantIdPagosSuccessRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/$tenantId/pagos': typeof TenantIdPagosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -166,17 +198,21 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
+  '/$tenantId/admin-pagos': typeof TenantIdAdminPagosRoute
   '/$tenantId/adminCasas': typeof TenantIdAdminCasasRoute
   '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
   '/$tenantId/casa': typeof TenantIdCasaRoute
   '/$tenantId/documentos': typeof TenantIdDocumentosRoute
-  '/$tenantId/pagos': typeof TenantIdPagosRoute
   '/$tenantId/perfil': typeof TenantIdPerfilRoute
   '/$tenantId/usuarios': typeof TenantIdUsuariosRoute
   '/admin/fraccionamientos': typeof AdminFraccionamientosRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/$tenantId/': typeof TenantIdIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/$tenantId/pagos/cancel': typeof TenantIdPagosCancelRoute
+  '/$tenantId/pagos/success': typeof TenantIdPagosSuccessRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/$tenantId/pagos/': typeof TenantIdPagosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -188,17 +224,21 @@ export interface FileRouteTypes {
     | '/login'
     | '/not-found'
     | '/user-not-in-fracc'
+    | '/$tenantId/admin-pagos'
     | '/$tenantId/adminCasas'
     | '/$tenantId/anuncios'
     | '/$tenantId/casa'
     | '/$tenantId/documentos'
-    | '/$tenantId/pagos'
     | '/$tenantId/perfil'
     | '/$tenantId/usuarios'
     | '/admin/fraccionamientos'
     | '/admin/usuarios'
     | '/$tenantId/'
     | '/admin/'
+    | '/$tenantId/pagos/cancel'
+    | '/$tenantId/pagos/success'
+    | '/api/stripe/webhook'
+    | '/$tenantId/pagos/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -206,17 +246,21 @@ export interface FileRouteTypes {
     | '/login'
     | '/not-found'
     | '/user-not-in-fracc'
+    | '/$tenantId/admin-pagos'
     | '/$tenantId/adminCasas'
     | '/$tenantId/anuncios'
     | '/$tenantId/casa'
     | '/$tenantId/documentos'
-    | '/$tenantId/pagos'
     | '/$tenantId/perfil'
     | '/$tenantId/usuarios'
     | '/admin/fraccionamientos'
     | '/admin/usuarios'
     | '/$tenantId'
     | '/admin'
+    | '/$tenantId/pagos/cancel'
+    | '/$tenantId/pagos/success'
+    | '/api/stripe/webhook'
+    | '/$tenantId/pagos'
   id:
     | '__root__'
     | '/'
@@ -226,17 +270,21 @@ export interface FileRouteTypes {
     | '/login'
     | '/not-found'
     | '/user-not-in-fracc'
+    | '/$tenantId/admin-pagos'
     | '/$tenantId/adminCasas'
     | '/$tenantId/anuncios'
     | '/$tenantId/casa'
     | '/$tenantId/documentos'
-    | '/$tenantId/pagos'
     | '/$tenantId/perfil'
     | '/$tenantId/usuarios'
     | '/admin/fraccionamientos'
     | '/admin/usuarios'
     | '/$tenantId/'
     | '/admin/'
+    | '/$tenantId/pagos/cancel'
+    | '/$tenantId/pagos/success'
+    | '/api/stripe/webhook'
+    | '/$tenantId/pagos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -247,6 +295,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   NotFoundRoute: typeof NotFoundRoute
   UserNotInFraccRoute: typeof UserNotInFraccRoute
+  ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -342,13 +391,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TenantIdPerfilRouteImport
       parentRoute: typeof TenantIdRouteRoute
     }
-    '/$tenantId/pagos': {
-      id: '/$tenantId/pagos'
-      path: '/pagos'
-      fullPath: '/$tenantId/pagos'
-      preLoaderRoute: typeof TenantIdPagosRouteImport
-      parentRoute: typeof TenantIdRouteRoute
-    }
     '/$tenantId/documentos': {
       id: '/$tenantId/documentos'
       path: '/documentos'
@@ -377,29 +419,70 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TenantIdAdminCasasRouteImport
       parentRoute: typeof TenantIdRouteRoute
     }
+    '/$tenantId/admin-pagos': {
+      id: '/$tenantId/admin-pagos'
+      path: '/admin-pagos'
+      fullPath: '/$tenantId/admin-pagos'
+      preLoaderRoute: typeof TenantIdAdminPagosRouteImport
+      parentRoute: typeof TenantIdRouteRoute
+    }
+    '/$tenantId/pagos/': {
+      id: '/$tenantId/pagos/'
+      path: '/pagos'
+      fullPath: '/$tenantId/pagos/'
+      preLoaderRoute: typeof TenantIdPagosIndexRouteImport
+      parentRoute: typeof TenantIdRouteRoute
+    }
+    '/api/stripe/webhook': {
+      id: '/api/stripe/webhook'
+      path: '/api/stripe/webhook'
+      fullPath: '/api/stripe/webhook'
+      preLoaderRoute: typeof ApiStripeWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$tenantId/pagos/success': {
+      id: '/$tenantId/pagos/success'
+      path: '/pagos/success'
+      fullPath: '/$tenantId/pagos/success'
+      preLoaderRoute: typeof TenantIdPagosSuccessRouteImport
+      parentRoute: typeof TenantIdRouteRoute
+    }
+    '/$tenantId/pagos/cancel': {
+      id: '/$tenantId/pagos/cancel'
+      path: '/pagos/cancel'
+      fullPath: '/$tenantId/pagos/cancel'
+      preLoaderRoute: typeof TenantIdPagosCancelRouteImport
+      parentRoute: typeof TenantIdRouteRoute
+    }
   }
 }
 
 interface TenantIdRouteRouteChildren {
+  TenantIdAdminPagosRoute: typeof TenantIdAdminPagosRoute
   TenantIdAdminCasasRoute: typeof TenantIdAdminCasasRoute
   TenantIdAnunciosRoute: typeof TenantIdAnunciosRoute
   TenantIdCasaRoute: typeof TenantIdCasaRoute
   TenantIdDocumentosRoute: typeof TenantIdDocumentosRoute
-  TenantIdPagosRoute: typeof TenantIdPagosRoute
   TenantIdPerfilRoute: typeof TenantIdPerfilRoute
   TenantIdUsuariosRoute: typeof TenantIdUsuariosRoute
   TenantIdIndexRoute: typeof TenantIdIndexRoute
+  TenantIdPagosCancelRoute: typeof TenantIdPagosCancelRoute
+  TenantIdPagosSuccessRoute: typeof TenantIdPagosSuccessRoute
+  TenantIdPagosIndexRoute: typeof TenantIdPagosIndexRoute
 }
 
 const TenantIdRouteRouteChildren: TenantIdRouteRouteChildren = {
+  TenantIdAdminPagosRoute: TenantIdAdminPagosRoute,
   TenantIdAdminCasasRoute: TenantIdAdminCasasRoute,
   TenantIdAnunciosRoute: TenantIdAnunciosRoute,
   TenantIdCasaRoute: TenantIdCasaRoute,
   TenantIdDocumentosRoute: TenantIdDocumentosRoute,
-  TenantIdPagosRoute: TenantIdPagosRoute,
   TenantIdPerfilRoute: TenantIdPerfilRoute,
   TenantIdUsuariosRoute: TenantIdUsuariosRoute,
   TenantIdIndexRoute: TenantIdIndexRoute,
+  TenantIdPagosCancelRoute: TenantIdPagosCancelRoute,
+  TenantIdPagosSuccessRoute: TenantIdPagosSuccessRoute,
+  TenantIdPagosIndexRoute: TenantIdPagosIndexRoute,
 }
 
 const TenantIdRouteRouteWithChildren = TenantIdRouteRoute._addFileChildren(
@@ -430,6 +513,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   NotFoundRoute: NotFoundRoute,
   UserNotInFraccRoute: UserNotInFraccRoute,
+  ApiStripeWebhookRoute: ApiStripeWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

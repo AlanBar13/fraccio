@@ -56,6 +56,7 @@ export const getUser = createServerFn({ method: 'GET' })
         }
 
         return {
+            id: data.user.id,
             email: data.user.email,
             tenantId: profile.tenant_id,
             role: profile.role,
