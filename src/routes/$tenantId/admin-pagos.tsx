@@ -9,7 +9,7 @@ export const Route = createFileRoute('/$tenantId/admin-pagos')({
   beforeLoad: ({ context }) => {
     // Check if user is admin or superadmin
     if (context.user.role !== 'admin' && context.user.role !== 'superadmin') {
-      throw redirect({ to: `/${context.tenant.id}` })
+      throw redirect({ to: `/$tenantId/pagos`, params: { tenantId: context.tenant.path } })
     }
   },
   loader: async ({ context }) => {

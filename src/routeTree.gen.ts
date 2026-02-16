@@ -27,6 +27,7 @@ import { Route as TenantIdCasaRouteImport } from './routes/$tenantId/casa'
 import { Route as TenantIdAnunciosRouteImport } from './routes/$tenantId/anuncios'
 import { Route as TenantIdAdminCasasRouteImport } from './routes/$tenantId/adminCasas'
 import { Route as TenantIdAdminPagosRouteImport } from './routes/$tenantId/admin-pagos'
+import { Route as TenantIdAdminAnunciosRouteImport } from './routes/$tenantId/admin-anuncios'
 import { Route as TenantIdPagosIndexRouteImport } from './routes/$tenantId/pagos/index'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
 import { Route as TenantIdPagosSuccessRouteImport } from './routes/$tenantId/pagos/success'
@@ -122,6 +123,11 @@ const TenantIdAdminPagosRoute = TenantIdAdminPagosRouteImport.update({
   path: '/admin-pagos',
   getParentRoute: () => TenantIdRouteRoute,
 } as any)
+const TenantIdAdminAnunciosRoute = TenantIdAdminAnunciosRouteImport.update({
+  id: '/admin-anuncios',
+  path: '/admin-anuncios',
+  getParentRoute: () => TenantIdRouteRoute,
+} as any)
 const TenantIdPagosIndexRoute = TenantIdPagosIndexRouteImport.update({
   id: '/pagos/',
   path: '/pagos/',
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
+  '/$tenantId/admin-anuncios': typeof TenantIdAdminAnunciosRoute
   '/$tenantId/admin-pagos': typeof TenantIdAdminPagosRoute
   '/$tenantId/adminCasas': typeof TenantIdAdminCasasRoute
   '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
+  '/$tenantId/admin-anuncios': typeof TenantIdAdminAnunciosRoute
   '/$tenantId/admin-pagos': typeof TenantIdAdminPagosRoute
   '/$tenantId/adminCasas': typeof TenantIdAdminCasasRoute
   '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
@@ -198,6 +206,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/not-found': typeof NotFoundRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
+  '/$tenantId/admin-anuncios': typeof TenantIdAdminAnunciosRoute
   '/$tenantId/admin-pagos': typeof TenantIdAdminPagosRoute
   '/$tenantId/adminCasas': typeof TenantIdAdminCasasRoute
   '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/not-found'
     | '/user-not-in-fracc'
+    | '/$tenantId/admin-anuncios'
     | '/$tenantId/admin-pagos'
     | '/$tenantId/adminCasas'
     | '/$tenantId/anuncios'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/not-found'
     | '/user-not-in-fracc'
+    | '/$tenantId/admin-anuncios'
     | '/$tenantId/admin-pagos'
     | '/$tenantId/adminCasas'
     | '/$tenantId/anuncios'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/not-found'
     | '/user-not-in-fracc'
+    | '/$tenantId/admin-anuncios'
     | '/$tenantId/admin-pagos'
     | '/$tenantId/adminCasas'
     | '/$tenantId/anuncios'
@@ -426,6 +438,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TenantIdAdminPagosRouteImport
       parentRoute: typeof TenantIdRouteRoute
     }
+    '/$tenantId/admin-anuncios': {
+      id: '/$tenantId/admin-anuncios'
+      path: '/admin-anuncios'
+      fullPath: '/$tenantId/admin-anuncios'
+      preLoaderRoute: typeof TenantIdAdminAnunciosRouteImport
+      parentRoute: typeof TenantIdRouteRoute
+    }
     '/$tenantId/pagos/': {
       id: '/$tenantId/pagos/'
       path: '/pagos'
@@ -458,6 +477,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface TenantIdRouteRouteChildren {
+  TenantIdAdminAnunciosRoute: typeof TenantIdAdminAnunciosRoute
   TenantIdAdminPagosRoute: typeof TenantIdAdminPagosRoute
   TenantIdAdminCasasRoute: typeof TenantIdAdminCasasRoute
   TenantIdAnunciosRoute: typeof TenantIdAnunciosRoute
@@ -472,6 +492,7 @@ interface TenantIdRouteRouteChildren {
 }
 
 const TenantIdRouteRouteChildren: TenantIdRouteRouteChildren = {
+  TenantIdAdminAnunciosRoute: TenantIdAdminAnunciosRoute,
   TenantIdAdminPagosRoute: TenantIdAdminPagosRoute,
   TenantIdAdminCasasRoute: TenantIdAdminCasasRoute,
   TenantIdAnunciosRoute: TenantIdAnunciosRoute,

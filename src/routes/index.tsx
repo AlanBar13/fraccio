@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 import NotFound from '@/components/ui/NotFound'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,7 @@ export const Route = createFileRoute('/')({
 })
 
 function App() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -94,6 +95,11 @@ function App() {
               <Home className="h-8 w-8 text-primary" />
               <span className="text-2xl font-bold text-primary">Fraccio</span>
             </div>
+            <Button variant="outline" onClick={() => {
+              router.navigate({ to: '/login' })
+            }}>
+              Iniciar Sesión
+            </Button>
             <Button variant="outline" onClick={() => {
               document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })
             }}>

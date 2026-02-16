@@ -228,7 +228,6 @@ export const getTenantUsersFn = createServerFn({ method: 'POST' })
     .handler(async ({ data }) => {
         const supabase = getSupabaseClient()
         const { data: users, error } = await getTenantUsersQuery(supabase, data.tenantId)
-        console.log('Fetched tenant users:', { users: JSON.stringify(users), tenantId: data.tenantId })
 
         if (error) {
             logger('error', 'Error fetching tenant users:', { error, tenantId: data.tenantId })

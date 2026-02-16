@@ -3,8 +3,9 @@ import { getTenantFn } from '@/lib/tenants'
 import { getUser, logoutFn } from '@/lib/user'
 import { logger } from '@/utils/logger'
 import { createFileRoute, isRedirect, Link, Outlet, redirect, useRouter, useRouterState } from '@tanstack/react-router'
-import { Banknote, BookOpen, Building, House, Mail, UserPen, Menu, X, LogOut, LayoutDashboard, User, ChevronDown } from 'lucide-react'
+import { Banknote, BookOpen, Building, House, Mail, UserPen, Menu, X, LogOut, LayoutDashboard, User, ChevronDown, Megaphone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { LoadingBar } from '@/components/ui/spinner'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -136,6 +137,13 @@ function RouteComponent() {
             path: `/${params.tenantId}/admin-pagos`,
             icon: Banknote,
             allowedRoles: ['admin', 'superadmin']
+        },
+        {
+            id: '9',
+            label: 'Administrar Anuncios',
+            path: `/${params.tenantId}/admin-anuncios`,
+            icon: Megaphone,
+            allowedRoles: ['admin', 'superadmin']
         }
     ]
 
@@ -145,10 +153,15 @@ function RouteComponent() {
 
     const allNavItems = [...navItems, ...filteredAdminItems]
 
+    // Check if router is loading
+    const isLoading = routerState.status === 'pending'
+
     return (
         <div className="min-h-screen bg-background">
             {/* Top Navbar - Mobile & Desktop */}
             <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
+                {/* Loading Bar */}
+                {isLoading && <LoadingBar className="absolute top-0 left-0 right-0" />}
                 <div className="flex h-16 items-center justify-between px-4 lg:px-6">
                     {/* Logo & Brand */}
                     <div className="flex items-center gap-3">
@@ -350,7 +363,15 @@ function RouteComponent() {
             </aside>
 
             {/* Main Content */}
-            <main className="p-4 md:p-6 lg:p-8">
+            <main className="p-4 md:p-6 lg:p-8 relative">
+                {isLoading && (
+                    <div className="absolute inset-0 bg-background/50 backdrop-blur-sm flex items-start justify-center pt-20 z-40">
+                        <div className="bg-card rounded-lg shadow-lg p-6 flex flex-col items-center gap-3">
+                            <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                            <p className="text-sm text-muted-foreground">Cargando...</p>
+                        </div>
+                    </div>
+                )}
                 <Outlet />
             </main>
         </div>
