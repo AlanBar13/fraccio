@@ -22,7 +22,7 @@ export const Route = createFileRoute('/$tenantId/casa')({
 
 function RouteComponent() {
   const { houseData } = Route.useLoaderData()
-  const { tenant } = Route.useRouteContext()
+  const { tenant, user: ctxUser } = Route.useRouteContext()
   const { addToast } = useToast()
   const router = useRouter()
 
@@ -267,7 +267,7 @@ function RouteComponent() {
                 >
                   {user.role === 'admin' ? 'Administrador' : 'Residente'}
                 </span>
-                {houseData.isOwner && user.id !== Route.useRouteContext().user.id && (
+                {houseData.isOwner && user.id !== ctxUser.id && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -301,6 +301,7 @@ function RouteComponent() {
             placeholder="Ej: Casa 123"
             value={houseName}
             onChange={(e) => setHouseName(e.target.value)}
+            disabled
             required
           />
         </FormField>
