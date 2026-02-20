@@ -69,8 +69,9 @@ export default function Signup({ invite }: Props) {
                     name,
                     tenantId: invite.tenant_id,
                     inviteId: invite.id,
-                    houseId: invite.house_id,
-                    houseOwner: invite.house_owner ?? false
+                    houseId: invite.house_id ?? undefined,
+                    houseOwner: invite.house_owner ?? false,
+                    is_admin: invite.is_admin ?? false
                 }
             })
 
@@ -95,6 +96,13 @@ export default function Signup({ invite }: Props) {
         } finally {
             setLoading(false)
         }
+    }
+
+    const getRoleBadgeString = (): string => {
+        if (invite.is_admin) {
+            return 'Administrador'
+        }
+        return invite.house_owner ? 'Propietario' : 'Residente'
     }
 
     return (
@@ -123,7 +131,7 @@ export default function Signup({ invite }: Props) {
                         <p className="text-sm text-muted-foreground mb-2">
                             Estás siendo invitado como{' '}
                             <Badge variant={invite.house_owner ? "default" : "secondary"} className="ml-1">
-                                {invite.house_owner ? 'Propietario' : 'Residente'}
+                                {getRoleBadgeString()}
                             </Badge>
                         </p>
                     </div>

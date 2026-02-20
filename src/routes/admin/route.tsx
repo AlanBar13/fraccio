@@ -1,7 +1,7 @@
 import { useToast } from '@/components/notifications'
 import { getUser, logoutFn } from '@/lib/user'
 import { logger } from '@/utils/logger'
-import { createFileRoute, isRedirect, Link, Outlet, redirect, useRouter } from '@tanstack/react-router'
+import { createFileRoute, isRedirect, Link, Outlet, redirect, useRouter, useRouterState } from '@tanstack/react-router'
 import { Building, Home, Users, Menu, X, LogOut, LayoutDashboard, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
@@ -34,6 +34,7 @@ function RouteComponent() {
     const { user } = Route.useRouteContext()
     const { addToast } = useToast()
     const router = useRouter()
+    const routerState = useRouterState()
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
     const onLogout = async () => {
@@ -103,8 +104,8 @@ function RouteComponent() {
                         {navItems.map((item) => {
                             const Icon = item.icon
                             const isActive = item.exact
-                                ? window.location.pathname === item.path
-                                : window.location.pathname.startsWith(item.path)
+                                ? routerState.location.pathname === item.path
+                                : routerState.location.pathname.startsWith(item.path)
 
                             return (
                                 <Link key={item.id} to={item.path}>
@@ -177,8 +178,8 @@ function RouteComponent() {
                         {navItems.map((item) => {
                             const Icon = item.icon
                             const isActive = item.exact
-                                ? window.location.pathname === item.path
-                                : window.location.pathname.startsWith(item.path)
+                                ? routerState.location.pathname === item.path
+                                : routerState.location.pathname.startsWith(item.path)
 
                             return (
                                 <Link

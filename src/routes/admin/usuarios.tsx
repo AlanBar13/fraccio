@@ -2,17 +2,21 @@ import { createFileRoute } from '@tanstack/react-router'
 import { getAllUsersFn } from '@/lib/admin-users'
 import { Users, Mail, Shield, Building, Calendar } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { listTenantsFn } from '@/lib/tenants'
+import SAUserForm from '@/components/admin/SAUserForm'
 
 export const Route = createFileRoute('/admin/usuarios')({
   loader: async () => {
-    const users = await getAllUsersFn()
-    return { users }
+    const usersReq = getAllUsersFn()
+    const tenantsReq = listTenantsFn()
+    const [users, tenants] = await Promise.all([usersReq, tenantsReq])
+    return { users, tenants }
   },
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { users } = Route.useLoaderData()
+  const { users, tenants } = Route.useLoaderData()
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -118,6 +122,8 @@ function RouteComponent() {
           </div>
         </div>
       </div>
+
+      <SAUserForm tenants={tenants} />
 
       {/* Users Table */}
       <div className="bg-card border rounded-xl overflow-hidden">

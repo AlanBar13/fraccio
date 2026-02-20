@@ -15,7 +15,6 @@ export const getInviteFn = createServerFn({ method: 'POST' })
             logger('error', 'Error fetching invite:', { error })
             throw error
         }
-        logger('info', 'Invite fetched:', { invite })
         return invite
     })
 

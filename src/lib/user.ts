@@ -17,16 +17,18 @@ const signupSchema = z.object({
     password: z.string().min(6),
     tenantId: z.uuid(),
     inviteId: z.uuid(),
-    houseId: z.number(),
-    houseOwner: z.boolean()
+    houseId: z.number().optional(),
+    houseOwner: z.boolean().default(false),
+    is_admin: z.boolean().default(false)
 })
 
 const inviteUserSchema = z.object({
     email: z.email(),
     tenantId: z.uuid(),
-    house_id: z.number(),
-    house_owner: z.boolean(),
-    name: z.string()
+    house_id: z.number().optional(),
+    house_owner: z.boolean().optional(),
+    name: z.string(),
+    is_admin: z.boolean().default(false)
 })
 
 interface LoginData {
@@ -140,23 +142,39 @@ export const signupFn = createServerFn({ method: 'POST' })
         }
 
         if (signupData.user) {
-            if (data.houseOwner) {
-                const { error: houseOwnerError } = await createHouseOwnerQuery(supabase, data.houseId, signupData.user.id)
-                if (houseOwnerError) {
-                    logger('error', 'Error creating house owner:', { error: houseOwnerError })
+            if (data.is_admin) {
+                console.log('Setting user as admin')
+                const { error: adminError } = await supabase.from('profiles').update({ role: 'admin' }).eq('id', signupData.user.id)
+                if (adminError) {
+                    logger('error', 'Error setting user as admin:', { error: adminError })
                     return {
                         error: true,
-                        message: houseOwnerError.message
+                        message: adminError.message
                     }
                 }
             }
+            else {
+                console.log('Setting user as regular user')
+                if (data.houseId) {
+                    if (data.houseOwner) {
+                        const { error: houseOwnerError } = await createHouseOwnerQuery(supabase, data.houseId, signupData.user.id)
+                        if (houseOwnerError) {
+                            logger('error', 'Error creating house owner:', { error: houseOwnerError })
+                            return {
+                                error: true,
+                                message: houseOwnerError.message
+                            }
+                        }
+                    }
 
-            const { error: houseUserError } = await createHouseUserQuery(supabase, data.houseId, signupData.user.id)
-            if (houseUserError) {
-                logger('error', 'Error creating house user:', { error: houseUserError })
-                return {
-                    error: true,
-                    message: houseUserError.message
+                    const { error: houseUserError } = await createHouseUserQuery(supabase, data.houseId, signupData.user.id)
+                    if (houseUserError) {
+                        logger('error', 'Error creating house user:', { error: houseUserError })
+                        return {
+                            error: true,
+                            message: houseUserError.message
+                        }
+                    }
                 }
             }
         }
@@ -209,6 +227,7 @@ export const inviteUserFn = createServerFn({ method: 'POST' })
                 house_id: data.house_id,
                 house_owner: data.house_owner,
                 name: data.name,
+                is_admin: data.is_admin,
                 expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // Expires in 7 days
             })
             .select()
