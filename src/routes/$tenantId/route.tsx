@@ -144,6 +144,13 @@ function RouteComponent() {
             path: `/${params.tenantId}/admin-anuncios`,
             icon: Megaphone,
             allowedRoles: ['admin', 'superadmin']
+        },
+        {
+            id: '10',
+            label: 'Administrar Documentos',
+            path: `/${params.tenantId}/admin-documentos`,
+            icon: BookOpen,
+            allowedRoles: ['admin', 'superadmin']
         }
     ]
 

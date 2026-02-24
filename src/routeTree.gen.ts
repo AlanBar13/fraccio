@@ -27,8 +27,10 @@ import { Route as TenantIdCasaRouteImport } from './routes/$tenantId/casa'
 import { Route as TenantIdAnunciosRouteImport } from './routes/$tenantId/anuncios'
 import { Route as TenantIdAdminCasasRouteImport } from './routes/$tenantId/adminCasas'
 import { Route as TenantIdAdminPagosRouteImport } from './routes/$tenantId/admin-pagos'
+import { Route as TenantIdAdminDocumentosRouteImport } from './routes/$tenantId/admin-documentos'
 import { Route as TenantIdAdminAnunciosRouteImport } from './routes/$tenantId/admin-anuncios'
 import { Route as TenantIdPagosIndexRouteImport } from './routes/$tenantId/pagos/index'
+import { Route as ApiUploadDocumentRouteImport } from './routes/api/upload/document'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
 import { Route as TenantIdPagosSuccessRouteImport } from './routes/$tenantId/pagos/success'
 import { Route as TenantIdPagosCancelRouteImport } from './routes/$tenantId/pagos/cancel'
@@ -123,6 +125,11 @@ const TenantIdAdminPagosRoute = TenantIdAdminPagosRouteImport.update({
   path: '/admin-pagos',
   getParentRoute: () => TenantIdRouteRoute,
 } as any)
+const TenantIdAdminDocumentosRoute = TenantIdAdminDocumentosRouteImport.update({
+  id: '/admin-documentos',
+  path: '/admin-documentos',
+  getParentRoute: () => TenantIdRouteRoute,
+} as any)
 const TenantIdAdminAnunciosRoute = TenantIdAdminAnunciosRouteImport.update({
   id: '/admin-anuncios',
   path: '/admin-anuncios',
@@ -132,6 +139,11 @@ const TenantIdPagosIndexRoute = TenantIdPagosIndexRouteImport.update({
   id: '/pagos/',
   path: '/pagos/',
   getParentRoute: () => TenantIdRouteRoute,
+} as any)
+const ApiUploadDocumentRoute = ApiUploadDocumentRouteImport.update({
+  id: '/api/upload/document',
+  path: '/api/upload/document',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
   id: '/api/stripe/webhook',
@@ -158,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/not-found': typeof NotFoundRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
   '/$tenantId/admin-anuncios': typeof TenantIdAdminAnunciosRoute
+  '/$tenantId/admin-documentos': typeof TenantIdAdminDocumentosRoute
   '/$tenantId/admin-pagos': typeof TenantIdAdminPagosRoute
   '/$tenantId/adminCasas': typeof TenantIdAdminCasasRoute
   '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
@@ -172,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/$tenantId/pagos/cancel': typeof TenantIdPagosCancelRoute
   '/$tenantId/pagos/success': typeof TenantIdPagosSuccessRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/api/upload/document': typeof ApiUploadDocumentRoute
   '/$tenantId/pagos/': typeof TenantIdPagosIndexRoute
 }
 export interface FileRoutesByTo {
@@ -181,6 +195,7 @@ export interface FileRoutesByTo {
   '/not-found': typeof NotFoundRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
   '/$tenantId/admin-anuncios': typeof TenantIdAdminAnunciosRoute
+  '/$tenantId/admin-documentos': typeof TenantIdAdminDocumentosRoute
   '/$tenantId/admin-pagos': typeof TenantIdAdminPagosRoute
   '/$tenantId/adminCasas': typeof TenantIdAdminCasasRoute
   '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
@@ -195,6 +210,7 @@ export interface FileRoutesByTo {
   '/$tenantId/pagos/cancel': typeof TenantIdPagosCancelRoute
   '/$tenantId/pagos/success': typeof TenantIdPagosSuccessRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/api/upload/document': typeof ApiUploadDocumentRoute
   '/$tenantId/pagos': typeof TenantIdPagosIndexRoute
 }
 export interface FileRoutesById {
@@ -207,6 +223,7 @@ export interface FileRoutesById {
   '/not-found': typeof NotFoundRoute
   '/user-not-in-fracc': typeof UserNotInFraccRoute
   '/$tenantId/admin-anuncios': typeof TenantIdAdminAnunciosRoute
+  '/$tenantId/admin-documentos': typeof TenantIdAdminDocumentosRoute
   '/$tenantId/admin-pagos': typeof TenantIdAdminPagosRoute
   '/$tenantId/adminCasas': typeof TenantIdAdminCasasRoute
   '/$tenantId/anuncios': typeof TenantIdAnunciosRoute
@@ -221,6 +238,7 @@ export interface FileRoutesById {
   '/$tenantId/pagos/cancel': typeof TenantIdPagosCancelRoute
   '/$tenantId/pagos/success': typeof TenantIdPagosSuccessRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/api/upload/document': typeof ApiUploadDocumentRoute
   '/$tenantId/pagos/': typeof TenantIdPagosIndexRoute
 }
 export interface FileRouteTypes {
@@ -234,6 +252,7 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/user-not-in-fracc'
     | '/$tenantId/admin-anuncios'
+    | '/$tenantId/admin-documentos'
     | '/$tenantId/admin-pagos'
     | '/$tenantId/adminCasas'
     | '/$tenantId/anuncios'
@@ -248,6 +267,7 @@ export interface FileRouteTypes {
     | '/$tenantId/pagos/cancel'
     | '/$tenantId/pagos/success'
     | '/api/stripe/webhook'
+    | '/api/upload/document'
     | '/$tenantId/pagos/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -257,6 +277,7 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/user-not-in-fracc'
     | '/$tenantId/admin-anuncios'
+    | '/$tenantId/admin-documentos'
     | '/$tenantId/admin-pagos'
     | '/$tenantId/adminCasas'
     | '/$tenantId/anuncios'
@@ -271,6 +292,7 @@ export interface FileRouteTypes {
     | '/$tenantId/pagos/cancel'
     | '/$tenantId/pagos/success'
     | '/api/stripe/webhook'
+    | '/api/upload/document'
     | '/$tenantId/pagos'
   id:
     | '__root__'
@@ -282,6 +304,7 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/user-not-in-fracc'
     | '/$tenantId/admin-anuncios'
+    | '/$tenantId/admin-documentos'
     | '/$tenantId/admin-pagos'
     | '/$tenantId/adminCasas'
     | '/$tenantId/anuncios'
@@ -296,6 +319,7 @@ export interface FileRouteTypes {
     | '/$tenantId/pagos/cancel'
     | '/$tenantId/pagos/success'
     | '/api/stripe/webhook'
+    | '/api/upload/document'
     | '/$tenantId/pagos/'
   fileRoutesById: FileRoutesById
 }
@@ -308,6 +332,7 @@ export interface RootRouteChildren {
   NotFoundRoute: typeof NotFoundRoute
   UserNotInFraccRoute: typeof UserNotInFraccRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
+  ApiUploadDocumentRoute: typeof ApiUploadDocumentRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -438,6 +463,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TenantIdAdminPagosRouteImport
       parentRoute: typeof TenantIdRouteRoute
     }
+    '/$tenantId/admin-documentos': {
+      id: '/$tenantId/admin-documentos'
+      path: '/admin-documentos'
+      fullPath: '/$tenantId/admin-documentos'
+      preLoaderRoute: typeof TenantIdAdminDocumentosRouteImport
+      parentRoute: typeof TenantIdRouteRoute
+    }
     '/$tenantId/admin-anuncios': {
       id: '/$tenantId/admin-anuncios'
       path: '/admin-anuncios'
@@ -451,6 +483,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/$tenantId/pagos/'
       preLoaderRoute: typeof TenantIdPagosIndexRouteImport
       parentRoute: typeof TenantIdRouteRoute
+    }
+    '/api/upload/document': {
+      id: '/api/upload/document'
+      path: '/api/upload/document'
+      fullPath: '/api/upload/document'
+      preLoaderRoute: typeof ApiUploadDocumentRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/stripe/webhook': {
       id: '/api/stripe/webhook'
@@ -478,6 +517,7 @@ declare module '@tanstack/react-router' {
 
 interface TenantIdRouteRouteChildren {
   TenantIdAdminAnunciosRoute: typeof TenantIdAdminAnunciosRoute
+  TenantIdAdminDocumentosRoute: typeof TenantIdAdminDocumentosRoute
   TenantIdAdminPagosRoute: typeof TenantIdAdminPagosRoute
   TenantIdAdminCasasRoute: typeof TenantIdAdminCasasRoute
   TenantIdAnunciosRoute: typeof TenantIdAnunciosRoute
@@ -493,6 +533,7 @@ interface TenantIdRouteRouteChildren {
 
 const TenantIdRouteRouteChildren: TenantIdRouteRouteChildren = {
   TenantIdAdminAnunciosRoute: TenantIdAdminAnunciosRoute,
+  TenantIdAdminDocumentosRoute: TenantIdAdminDocumentosRoute,
   TenantIdAdminPagosRoute: TenantIdAdminPagosRoute,
   TenantIdAdminCasasRoute: TenantIdAdminCasasRoute,
   TenantIdAnunciosRoute: TenantIdAnunciosRoute,
@@ -535,6 +576,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotFoundRoute: NotFoundRoute,
   UserNotInFraccRoute: UserNotInFraccRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRoute,
+  ApiUploadDocumentRoute: ApiUploadDocumentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
