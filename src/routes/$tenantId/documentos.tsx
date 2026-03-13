@@ -5,7 +5,8 @@ import { FileText, Image, Download } from 'lucide-react'
 
 export const Route = createFileRoute('/$tenantId/documentos')({
   loader: async ({ context }) => {
-    const documents = await getDocumentsFn({ data: { tenantId: context.tenant.id } })
+    const documents = await getDocumentsFn({ data: { tenantId: context.tenant.id, user: context.user } })
+    console.log('Loaded documents:', documents)
     return { documents }
   },
   component: RouteComponent,

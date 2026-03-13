@@ -46,11 +46,20 @@ const SidebarNav = React.forwardRef<HTMLDivElement, SidebarNavProps>(
         }
 
         return (
-          <div key={item.id}>
+          <div key={item.id} className="relative">
+            {item.active && (
+              <span
+                className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full"
+                style={{ backgroundColor: 'var(--tertiary-fixed)' }}
+              />
+            )}
             <Button
-              variant={item.active ? 'secondary' : 'ghost'}
+              variant="ghost"
               className={cn(
                 'w-full justify-start gap-2 transition-colors',
+                item.active
+                  ? 'text-[var(--on-surface)] font-semibold bg-transparent hover:bg-[var(--surface-container-highest)]'
+                  : 'text-[var(--on-surface-variant)] hover:text-[var(--on-surface)] hover:bg-[var(--surface-container-highest)]',
                 level > 0 && `pl-${4 + level * 4}`,
               )}
               disabled={item.disabled}
@@ -65,7 +74,7 @@ const SidebarNav = React.forwardRef<HTMLDivElement, SidebarNavProps>(
               {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
               <span className="flex-1 text-left truncate">{item.label}</span>
               {item.badge && (
-                <span className="flex-shrink-0 rounded-full bg-primary/20 px-2 py-0.5 text-xs font-medium text-primary">
+                <span className="flex-shrink-0 rounded-full bg-[var(--surface-container-highest)] px-2 py-0.5 text-xs font-medium text-[var(--on-surface)]">
                   {item.badge}
                 </span>
               )}

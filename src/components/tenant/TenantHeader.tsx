@@ -27,7 +27,7 @@ const TenantHeader = React.forwardRef<HTMLDivElement, TenantHeaderProps>(
       <div
         ref={ref}
         className={cn(
-          'flex items-center gap-3 px-4 py-3 rounded-lg bg-muted/30 border border-border/30',
+          'flex items-center gap-3 px-4 py-3 rounded-lg bg-[var(--surface-container-highest)]',
           className
         )}
         {...props}

@@ -56,7 +56,7 @@ export const DataTable = React.forwardRef<
     }
 
     return (
-      <div className="overflow-x-auto rounded-lg border border-border/50">
+      <div className="overflow-x-auto rounded-lg bg-card">
         <table
           ref={ref}
           className={cn(
@@ -65,13 +65,13 @@ export const DataTable = React.forwardRef<
           )}
         >
           <thead>
-            <tr className="border-b border-border bg-muted/30">
+            <tr className="bg-[var(--surface-container-low)]">
               {columns.map((col) => (
                 <th
                   key={String(col.key)}
                   className={cn(
-                    'px-4 py-3 text-left font-semibold text-foreground/80',
-                    dense && 'py-2 px-3 text-xs',
+                    'px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.05em] text-[var(--on-surface-variant)]',
+                    dense && 'py-2 px-3',
                     col.className
                   )}
                   style={{ width: col.width }}
@@ -117,7 +117,7 @@ export const DataTable = React.forwardRef<
                 <td
                   colSpan={columns.length}
                   className={cn(
-                    'px-4 py-8 text-center text-foreground/50',
+                    'px-4 py-8 text-center text-[var(--on-surface-variant)]',
                     dense && 'py-4 px-3'
                   )}
                 >
@@ -129,16 +129,16 @@ export const DataTable = React.forwardRef<
                 <tr
                   key={idx}
                   className={cn(
-                    'border-b border-border/30 transition-colors',
-                    striped && idx % 2 === 0 && 'bg-muted/20',
-                    hoverable && 'hover:bg-muted/40'
+                    'transition-colors',
+                    striped && idx % 2 === 0 && 'bg-[var(--surface-container-low)]',
+                    hoverable && 'hover:bg-[var(--surface-container-highest)]'
                   )}
                 >
                   {columns.map((col) => (
                     <td
                       key={String(col.key)}
                       className={cn(
-                        'px-4 py-3 text-foreground',
+                        'px-4 py-4 text-[var(--on-surface)]',
                         dense && 'py-2 px-3 text-xs',
                         col.className
                       )}

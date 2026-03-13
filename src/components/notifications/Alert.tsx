@@ -13,27 +13,27 @@ export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const typeConfig = {
   info: {
-    bgColor: 'bg-blue-50 dark:bg-blue-900/20',
-    borderColor: 'border-blue-200 dark:border-blue-800',
-    textColor: 'text-blue-800 dark:text-blue-200',
+    bgColor: 'bg-[var(--surface-container-highest)]',
+    borderColor: '',
+    textColor: 'text-[var(--on-surface)]',
     Icon: Info,
   },
   success: {
-    bgColor: 'bg-green-50 dark:bg-green-900/20',
-    borderColor: 'border-green-200 dark:border-green-800',
-    textColor: 'text-green-800 dark:text-green-200',
+    bgColor: 'bg-[var(--tertiary-container)]',
+    borderColor: '',
+    textColor: 'text-[var(--on-tertiary-container)]',
     Icon: CheckCircle,
   },
   warning: {
-    bgColor: 'bg-yellow-50 dark:bg-yellow-900/20',
-    borderColor: 'border-yellow-200 dark:border-yellow-800',
-    textColor: 'text-yellow-800 dark:text-yellow-200',
+    bgColor: 'bg-[var(--error-container)]',
+    borderColor: '',
+    textColor: 'text-[var(--on-error-container)]',
     Icon: AlertTriangle,
   },
   error: {
-    bgColor: 'bg-red-50 dark:bg-red-900/20',
-    borderColor: 'border-red-200 dark:border-red-800',
-    textColor: 'text-red-800 dark:text-red-200',
+    bgColor: 'bg-[var(--error-container)]',
+    borderColor: '',
+    textColor: 'text-[var(--on-error-container)]',
     Icon: AlertCircle,
   },
 }
@@ -59,9 +59,8 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
       <div
         ref={ref}
         className={cn(
-          'relative w-full rounded-lg border px-4 py-3 flex gap-3',
+          'relative w-full rounded-lg px-4 py-3 flex gap-3',
           config.bgColor,
-          config.borderColor,
           className
         )}
         {...props}

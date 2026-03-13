@@ -3,10 +3,11 @@ import { s3Service } from "./s3";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from 'zod'
 import { getSupabaseClient } from "./supabase";
-import { getUser } from "./user";
+import { getUser, getUserSchema } from "./user";
 
 const getDocumentsSchema = z.object({
     tenantId: z.uuid(),
+    user: getUserSchema
 })
 
 const deleteDocumentSchema = z.object({
@@ -36,13 +37,7 @@ export const getDocumentsFn = createServerFn({ method: 'POST' })
     .inputValidator(getDocumentsSchema)
     .handler(async ({ data }) => {
         const supabase = getSupabaseClient()
-
-        // Get authenticated user
-        const user = await getUser()
-        if (!user) {
-            logger('error', 'User not authenticated')
-            throw new Error('User not authenticated')
-        }
+        const user = data.user
 
         // Verify user belongs to the tenant
         if (user.tenantId !== data.tenantId) {
@@ -54,15 +49,20 @@ export const getDocumentsFn = createServerFn({ method: 'POST' })
             throw new Error('Unauthorized: User does not belong to this tenant')
         }
 
-        // Check if user is a house owner
-        const { data: houseOwnerRecord } = await supabase
-            .from('house_owners')
-            .select('user_id')
-            .eq('user_id', user.id)
-            .limit(1)
-            .maybeSingle()
+        let shouldSeeOwnerDocuments = false;
+        if (user.role !== 'admin' && user.role !== 'superadmin') {
+            // Check if user is a house owner
+            const { data: houseOwnerRecord } = await supabase
+                .from('house_owners')
+                .select('user_id')
+                .eq('user_id', user.id)
+                .limit(1)
+                .maybeSingle()
 
-        const isHouseOwner = !!houseOwnerRecord
+            shouldSeeOwnerDocuments = !!houseOwnerRecord
+        }else {
+            shouldSeeOwnerDocuments = true
+        }
 
         // Build query with conditional visibility filter
         let query = supabase
@@ -71,7 +71,7 @@ export const getDocumentsFn = createServerFn({ method: 'POST' })
             .eq('tenant_id', data.tenantId)
 
         // Non-owners can only see public documents
-        if (!isHouseOwner) {
+        if (!shouldSeeOwnerDocuments) {
             query = query.eq('owner_only', false)
         }
 

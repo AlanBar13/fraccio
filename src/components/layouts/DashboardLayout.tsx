@@ -46,7 +46,7 @@ const DashboardLayout = React.forwardRef<HTMLDivElement, DashboardLayoutProps>(
       >
         {/* Header */}
         {header && (
-          <header className="border-b border-border/50 bg-card">
+          <header className="bg-[var(--surface-container-low)]">
             <div className="flex items-center justify-between px-4 py-3">
               <Button
                 variant="ghost"
@@ -81,7 +81,7 @@ const DashboardLayout = React.forwardRef<HTMLDivElement, DashboardLayoutProps>(
               {/* Sidebar */}
               <aside
                 className={cn(
-                  `fixed bottom-0 left-0 top-0 z-50 border-r border-border/50 bg-card overflow-y-auto transition-transform ${sidebarWidthMap[sidebarWidth]} ${breakpointMap[mobileBreakpoint]}:static ${breakpointMap[mobileBreakpoint]}:z-auto ${breakpointMap[mobileBreakpoint]}:translate-x-0`,
+                  `fixed bottom-0 left-0 top-0 z-50 bg-[var(--surface-container)] overflow-y-auto transition-transform ${sidebarWidthMap[sidebarWidth]} ${breakpointMap[mobileBreakpoint]}:static ${breakpointMap[mobileBreakpoint]}:z-auto ${breakpointMap[mobileBreakpoint]}:translate-x-0`,
                   sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                 )}
               >

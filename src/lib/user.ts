@@ -31,6 +31,14 @@ const inviteUserSchema = z.object({
     is_admin: z.boolean().default(false)
 })
 
+export const getUserSchema = z.object({
+    id: z.uuid(),
+    email: z.email().optional(),
+    tenantId: z.uuid(),
+    role: z.string(),
+    full_name: z.string().nullable()
+})
+
 interface LoginData {
     error: boolean
     message: string

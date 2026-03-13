@@ -166,7 +166,7 @@ function RouteComponent() {
     return (
         <div className="min-h-screen bg-background">
             {/* Top Navbar - Mobile & Desktop */}
-            <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
+            <header className="sticky top-0 z-50 bg-[var(--surface-container-low)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--surface-container-low)]/80">
                 {/* Loading Bar */}
                 {isLoading && <LoadingBar className="absolute top-0 left-0 right-0" />}
                 <div className="flex h-16 items-center justify-between px-4 lg:px-6">
@@ -185,8 +185,8 @@ function RouteComponent() {
                             )}
                         </Button>
                         <Link to={`/$tenantId`} params={{ tenantId: params.tenantId }} className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                                <Building className="h-5 w-5 text-primary-foreground" />
+                            <div className="h-8 w-8 rounded-lg [background:linear-gradient(135deg,#000000,#131b2e)] flex items-center justify-center">
+                                <Building className="h-5 w-5 text-white" />
                             </div>
                             <div className="hidden sm:block">
                                 <h1 className="text-xl font-bold">{tenant.name}</h1>
@@ -204,9 +204,14 @@ function RouteComponent() {
                             return (
                                 <Link key={item.id} to={item.path}>
                                     <Button
-                                        variant={isActive ? "secondary" : "ghost"}
+                                        variant="ghost"
                                         size="sm"
-                                        className="gap-2"
+                                        className={cn(
+                                            'gap-2 transition-colors',
+                                            isActive
+                                                ? 'text-[var(--on-surface)] font-semibold bg-[var(--surface-container-highest)]'
+                                                : 'text-[var(--on-surface-variant)] hover:text-[var(--on-surface)] hover:bg-[var(--surface-container-highest)]'
+                                        )}
                                     >
                                         <Icon className="h-4 w-4" />
                                         {item.label}
@@ -234,7 +239,7 @@ function RouteComponent() {
                                             className="fixed inset-0 z-40"
                                             onClick={() => setIsProfileOpen(false)}
                                         />
-                                        <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border bg-card p-2 shadow-lg z-50">
+                                        <div className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-white/80 backdrop-blur-[12px] p-2 shadow-[0_20px_40px_var(--ambient-shadow)] z-50">
                                             {filteredAdminItems.map((item) => {
                                                 const Icon = item.icon
                                                 return (
@@ -263,9 +268,9 @@ function RouteComponent() {
 
                     {/* User Info & Actions */}
                     <div className="flex items-center gap-3">
-                        <div className="hidden md:flex items-center gap-3 px-3 py-2 rounded-lg bg-muted/50">
-                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                <User className="h-4 w-4 text-primary" />
+                        <div className="hidden md:flex items-center gap-3 px-3 py-2 rounded-lg bg-[var(--surface-container-highest)]">
+                            <div className="h-8 w-8 rounded-full bg-[var(--surface-container)] flex items-center justify-center">
+                                <User className="h-4 w-4 text-[var(--on-surface-variant)]" />
                             </div>
                             <div className="text-sm">
                                 <p className="font-medium">{user.full_name}</p>
@@ -292,7 +297,7 @@ function RouteComponent() {
             {/* Mobile Sidebar Overlay */}
             {isSidebarOpen && (
                 <div
-                    className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm lg:hidden"
+                    className="fixed inset-0 z-40 bg-[var(--on-surface)]/30 backdrop-blur-sm lg:hidden"
                     onClick={() => setIsSidebarOpen(false)}
                 />
             )}
@@ -300,16 +305,16 @@ function RouteComponent() {
             {/* Mobile Sidebar */}
             <aside
                 className={cn(
-                    "fixed left-0 top-16 z-40 h-[calc(100vh-4rem)] w-72 border-r bg-card transition-transform duration-300 lg:hidden",
+                    "fixed left-0 top-16 z-40 h-[calc(100vh-4rem)] w-72 bg-[var(--surface-container)] transition-transform duration-300 lg:hidden",
                     isSidebarOpen ? "translate-x-0" : "-translate-x-full"
                 )}
             >
                 <div className="flex flex-col h-full">
                     {/* User Info - Mobile */}
-                    <div className="p-4 border-b">
-                        <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                <User className="h-5 w-5 text-primary" />
+                    <div className="p-4">
+                        <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--surface-container-highest)]">
+                            <div className="h-10 w-10 rounded-full bg-[var(--surface-dim)] flex items-center justify-center">
+                                <User className="h-5 w-5 text-[var(--on-surface-variant)]" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="font-medium truncate">{user.full_name}</p>
@@ -331,8 +336,13 @@ function RouteComponent() {
                                     onClick={() => setIsSidebarOpen(false)}
                                 >
                                     <Button
-                                        variant={isActive ? "secondary" : "ghost"}
-                                        className="w-full justify-start gap-3 h-11"
+                                        variant="ghost"
+                                        className={cn(
+                                            'w-full justify-start gap-3 h-11 transition-colors',
+                                            isActive
+                                                ? 'text-[var(--on-surface)] font-semibold bg-[var(--surface-container-highest)]'
+                                                : 'text-[var(--on-surface-variant)] hover:text-[var(--on-surface)] hover:bg-[var(--surface-container-highest)]'
+                                        )}
                                     >
                                         <Icon className="h-5 w-5" />
                                         <span className="text-base">{item.label}</span>
@@ -343,7 +353,7 @@ function RouteComponent() {
                     </nav>
 
                     {/* Footer Actions - Mobile */}
-                    <div className="p-4 border-t space-y-2">
+                    <div className="p-4 space-y-2">
                         <Link to={`/$tenantId/perfil`} params={{ tenantId: params.tenantId }}>
                             <Button
                                 variant="outline"
@@ -373,7 +383,7 @@ function RouteComponent() {
             <main className="p-4 md:p-6 lg:p-8 relative">
                 {isLoading && (
                     <div className="absolute inset-0 bg-background/50 backdrop-blur-sm flex items-start justify-center pt-20 z-40">
-                        <div className="bg-card rounded-lg shadow-lg p-6 flex flex-col items-center gap-3">
+                        <div className="bg-white/80 backdrop-blur-[12px] rounded-xl shadow-[0_20px_40px_var(--ambient-shadow)] p-6 flex flex-col items-center gap-3">
                             <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                             <p className="text-sm text-muted-foreground">Cargando...</p>
                         </div>

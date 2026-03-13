@@ -86,7 +86,7 @@ export default function Login() {
                 </p>
             </div>
 
-            <Card className="border-2">
+            <Card className="bg-white/80 backdrop-blur-[12px]">
                 <CardHeader className="space-y-1 pb-6">
                     <CardTitle className="text-2xl font-bold">Iniciar Sesión</CardTitle>
                     <CardDescription>
