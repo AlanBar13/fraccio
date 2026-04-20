@@ -16,15 +16,13 @@ const config = defineConfig({
   },
   plugins: [
     devtools(),
-    nitro({
-      preset: 'vercel'
-    }),
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
       projects: ['./tsconfig.json'],
     }),
     tailwindcss(),
     tanstackStart(),
+    nitro(),
     viteReact(),
   ],
 })
