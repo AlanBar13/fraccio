@@ -228,7 +228,7 @@ export const getPaymentHistoryFn = createServerFn({ method: 'POST' })
     }
 
     // Verify user belongs to the tenant
-    if (user.tenantId !== data.tenantId) {
+    if (user.tenantId !== data.tenantId && user.role !== 'superadmin') {
       logger('error', 'User does not belong to tenant')
       throw new Error('Unauthorized')
     }
@@ -265,7 +265,7 @@ export const getPaymentItemsFn = createServerFn({ method: 'POST' })
     }
 
     // Verify user belongs to the tenant
-    if (user.tenantId !== data.tenantId) {
+    if (user.tenantId !== data.tenantId && user.role !== 'superadmin') {
       logger('error', 'User does not belong to tenant')
       throw new Error('Unauthorized')
     }
@@ -361,7 +361,7 @@ export const getAdminPaymentsFn = createServerFn({ method: 'POST' })
     }
 
     // Verify user belongs to the tenant
-    if (user.tenantId !== data.tenantId) {
+    if (user.tenantId !== data.tenantId && user.role !== 'superadmin') {
       logger('error', 'User does not belong to tenant')
       throw new Error('Unauthorized')
     }

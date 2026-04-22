@@ -214,6 +214,7 @@ export const inviteUserFn = createServerFn({ method: 'POST' })
     .inputValidator(inviteUserSchema)
     .handler(async ({ data }) => {
         const supabase = getSupabaseClient()
+        console.log('Inviting user with data:', data)
 
         const { data: existingInvite } = await supabase
             .from('invites')

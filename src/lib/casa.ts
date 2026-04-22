@@ -65,7 +65,7 @@ export const getUserHouseFn = createServerFn({ method: 'POST' })
     }
 
     // Verify user belongs to the tenant
-    if (user.tenantId !== data.tenantId) {
+    if (user.tenantId !== data.tenantId && user.role !== 'superadmin') {
       logger('error', 'User does not belong to tenant', {
         userId: user.email,
         requestedTenant: data.tenantId,

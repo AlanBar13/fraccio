@@ -12,13 +12,13 @@ import { cn } from '@/lib/utils'
 export const Route = createFileRoute('/$tenantId')({
     beforeLoad: async ({ params }) => {
         try {
-            const user = await getUser()
             const tenant = await getTenantFn({ data: { path: params.tenantId } })
             if (!tenant) {
                 logger('warn', 'Tenant not found:', { tenant: params.tenantId })
                 throw redirect({ to: '/not-found' })
             }
 
+            const user = await getUser()
             // Check if user is superadmin, if it is, allow access
             if (user.role === 'superadmin') {
                 return { tenant, user }
